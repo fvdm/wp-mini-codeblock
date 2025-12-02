@@ -4,14 +4,16 @@ A lightweight, dependency-free WordPress syntax highlighting plugin.
 
 
 ## Features
-- Zero dependencies (production & development)
-- 11 languages: JS, TS, CSS, HTML, PHP, Python, JSON, XML, Bash, INI, C
+- Zero dependencies
 - Dark theme with flat colors
 - Copy-to-clipboard button
 - Fully responsive
-- Gutenberg block editor support
 - Small footprint
-- Optimized for fast page loading
+- Only loaded where needed
+- Optimized for fast page loading and minimal code in the editor
+- Languages: C, CSS, HTML, INI, Javascript, JSON, PHP, Python, Shell, TypeScript, XML
+- Gutenberg block editor support
+- System monospace font
 
 
 ## Installation
@@ -20,20 +22,6 @@ A lightweight, dependency-free WordPress syntax highlighting plugin.
 2. Upload the `franklin-mini-codeblock` folder to `/wp-content/plugins/`
 3. Activate the plugin through the WordPress admin panel
 4. Add a "Mini Code Block" in the block editor
-
-
-## File Structure
-
-```
-franklin-mini-codeblock/
-├── franklin-mini-codeblock.php   (Main plugin file)
-└── assets/
-    ├── block.json                (Block configuration)
-    ├── editor.js                 (Gutenberg editor)
-    ├── editor.css                (Editor styles)
-    ├── frontend.js               (Syntax highlighter + copy button)
-    └── style.css                 (Frontend styles)
-```
 
 
 ## Usage
@@ -45,30 +33,21 @@ franklin-mini-codeblock/
 5. Publish!
 
 The code block will appear with:
-- Dark background (#1a1a1a)
-- Language label
-- Copy button
 - Syntax highlighting
+- Dark background
+- Copy button
 - Responsive design
-- Smooth rounded corners
 
 
 ### Matomo stats
 
 When you have a Matomo tracker in your page, the copy-button clicks
-will be tracked as events
+will be tracked as events:
 
-Category `copy`, name `fmc-code`, value `fmc`
+Category `copy`, name `fmc-code` and value `fmc`
 
-To distinguish code blocks you can replace the value with a
-**Matomo ID** in the editor. Does not have to be unique.
-
-
-## Technical Details
-
-- **Editor assets**: Only load when editing
-- **Frontend assets**: Only load when block is present on page
-- **Font**: System monospace stack
+To distinguish code blocks you can replace the value with a **Matomo ID**
+in the editor. Does not have to be unique.
 
 
 ## Browser Support
