@@ -13,19 +13,19 @@
             const blockProps = useBlockProps();
 
             const languages = [
-                { label: 'JavaScript', value: 'javascript' },
-                { label: 'TypeScript', value: 'typescript' },
+                { label: 'C', value: 'c' },
                 { label: 'CSS', value: 'css' },
                 { label: 'HTML', value: 'html' },
+                { label: 'INI', value: 'ini' },
+                { label: 'JavaScript', value: 'javascript' },
+                { label: 'JSON', value: 'json' },
+                { label: 'Lua', value: 'lua' },
                 { label: 'PHP', value: 'php' },
                 { label: 'Python', value: 'python' },
-                { label: 'Lua', value: 'lua' },
-                { label: 'JSON', value: 'json' },
-                { label: 'XML', value: 'xml' },
-                { label: 'Bash', value: 'bash' },
-                { label: 'INI', value: 'ini' },
-                { label: 'C', value: 'c' },
-                { label: 'URL', value: 'url' }
+                { label: 'Shell', value: 'shell' },
+                { label: 'TypeScript', value: 'typescript' },
+                { label: 'URL', value: 'url' },
+                { label: 'XML', value: 'xml' }
             ];
 
             return el(
