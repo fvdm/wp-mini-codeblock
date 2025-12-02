@@ -14,9 +14,12 @@
 }
 
 .wp-block-franklin-mini-codeblock .fmc-editor-textarea textarea {
-    font: 11px/1.5 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
-    white-space: pre;
-    overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    white-space: pre;      /* keep spaces & line breaks, no wrapping */
+    overflow-x: auto;      /* enable horizontal scroll */
+    overflow-y: auto;
     width: 100%;
     box-sizing: border-box;
 }

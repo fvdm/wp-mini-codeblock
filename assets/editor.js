@@ -1,54 +1,64 @@
-(function() {
-    var el = wp.element.createElement;
-    var useBlockProps = wp.blockEditor.useBlockProps;
-    var TextControl = wp.components.TextControl;
-    var SelectControl = wp.components.SelectControl;
-    var TextareaControl = wp.components.TextareaControl;
+(function () {
+    const registerBlockType = wp.blocks.registerBlockType;
+    const el = wp.element.createElement;
+    const TextareaControl = wp.components.TextareaControl;
+    const SelectControl = wp.components.SelectControl;
+    const TextControl = wp.components.TextControl;
+    const useBlockProps = wp.blockEditor.useBlockProps;
 
-    // Language options
-    var languages = [
-        { label: 'C', value: 'c' },
-        { label: 'CSS', value: 'css' },
-        { label: 'HTML', value: 'html' },
-        { label: 'INI', value: 'ini' },
-        { label: 'JavaScript', value: 'javascript' },
-        { label: 'JSON', value: 'json' },
-        { label: 'Lua', value: 'lua' },
-        { label: 'PHP', value: 'php' },
-        { label: 'Python', value: 'python' },
-        { label: 'Shell', value: 'shell' },
-        { label: 'Text', value: 'text' },
-        { label: 'TypeScript', value: 'typescript' },
-        { label: 'URL', value: 'url' },
-        { label: 'XML', value: 'xml' }
-    ];
+    registerBlockType('franklin/mini-codeblock', {
+        edit: function (props) {
+            const attributes = props.attributes;
+            const setAttributes = props.setAttributes;
+            const blockProps = useBlockProps();
 
-    wp.blocks.registerBlockType('franklin/mini-codeblock', {
-        edit: function(props) {
-            var attr = props.attributes;
-            var set = props.setAttributes;
+            const languages = [
+                { label: 'C', value: 'c' },
+                { label: 'CSS', value: 'css' },
+                { label: 'HTML', value: 'html' },
+                { label: 'INI', value: 'ini' },
+                { label: 'JavaScript', value: 'javascript' },
+                { label: 'JSON', value: 'json' },
+                { label: 'Lua', value: 'lua' },
+                { label: 'PHP', value: 'php' },
+                { label: 'Python', value: 'python' },
+                { label: 'Shell', value: 'shell' },
+                { label: 'TypeScript', value: 'typescript' },
+                { label: 'URL', value: 'url' },
+                { label: 'XML', value: 'xml' }
+            ];
 
-            return el('div', useBlockProps(),
+            return el(
+                'div',
+                blockProps,
                 el(TextControl, {
-                    label: 'Matomo ID',
-                    value: attr.id,
-                    onChange: function(v) { set({ id: v }); }
+                  label: 'Matomo ID',
+                  value: attributes.id,
+                  onChange: function (value) {
+                    setAttributes({ id: value });
+                  }
                 }),
                 el(SelectControl, {
                     label: 'Language',
-                    value: attr.language,
+                    value: attributes.language,
                     options: languages,
-                    onChange: function(v) { set({ language: v }); }
+                    onChange: function (value) {
+                        setAttributes({ language: value });
+                    }
                 }),
                 el(TextareaControl, {
                     label: 'Code',
                     className: 'fmc-editor-textarea',
-                    value: attr.code,
-                    onChange: function(v) { set({ code: v }); },
+                    value: attributes.code,
+                    onChange: function (value) {
+                        setAttributes({ code: value });
+                    },
                     rows: 16
                 })
             );
         },
-        save: function() { return null; }
+        save: function () {
+            return null;
+        }
     });
 })();
