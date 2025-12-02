@@ -69,6 +69,9 @@ The PHP `render_block()` method in `franklin-mini-codeblock.php` generates the H
 ### CSS Class Naming
 All CSS classes use the `fmc-` prefix (Franklin Mini Codeblock). Syntax highlighting classes follow the pattern `fmc-{token-type}` (e.g., `fmc-keyword`, `fmc-string`).
 
+### CSP-friendly
+Never use `style` attributes, as they cannot be nonce'd. And avoid inline javascript.
+
 ### Version Updates
 When updating the plugin version, change it in both locations in `franklin-mini-codeblock.php`:
 1. The plugin header comment (`Version: X.X.X`)
@@ -90,5 +93,7 @@ When updating the plugin version, change it in both locations in `franklin-mini-
 2. **Edit assets/ directly** - Assets are hand-written, not compiled from source files
 3. **Always validate PHP syntax** after editing PHP files
 4. **Preserve the `fmc-` prefix** for all CSS classes
+5. **Always write clean code with proper spacing** - Human readability is important
+6. **Add one-line comments above complex sections** but keep it simple to read
 
 Trust these instructions. Only search for additional information if something documented here is incomplete or produces unexpected results.
