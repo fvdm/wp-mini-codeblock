@@ -87,7 +87,7 @@ When updating the plugin version, change it in both locations in `franklin-mini-
 ## Important Constraints
 
 1. **Do not run npm/composer** - This project has no package manager dependencies
-2. **Do not regenerate assets/** - Assets are hand-written, not compiled
+2. **Edit assets/ directly** - Assets are hand-written, not compiled from source files
 3. **Always validate PHP syntax** after editing PHP files
 4. **Preserve the `fmc-` prefix** for all CSS classes
 
