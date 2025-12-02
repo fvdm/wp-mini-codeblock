@@ -21,7 +21,7 @@ class Franklin_Mini_Codeblock {
     }
 
     public function register_block() {
-        register_block_type(__DIR__ . '/build', array(
+        register_block_type(__DIR__ . '/assets', array(
             'render_callback' => array($this, 'render_block')
         ));
     }
@@ -62,14 +62,14 @@ class Franklin_Mini_Codeblock {
     public function editor_assets() {
         wp_enqueue_script(
             'franklin-mini-codeblock-editor',
-            plugins_url('build/editor.js', __FILE__),
+            plugins_url('assets/editor.js', __FILE__),
             array('wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components'),
             $this->version
         );
 
         wp_enqueue_style(
             'franklin-mini-codeblock-editor-style',
-            plugins_url('build/editor.css', __FILE__),
+            plugins_url('assets/editor.css', __FILE__),
             array(),
             $this->version
         );
@@ -82,14 +82,14 @@ class Franklin_Mini_Codeblock {
 
         wp_enqueue_style(
             'franklin-mini-codeblock-style',
-            plugins_url('build/style.css', __FILE__),
+            plugins_url('assets/style.css', __FILE__),
             array(),
             $this->version
         );
 
         wp_enqueue_script(
             'franklin-mini-codeblock-frontend',
-            plugins_url('build/frontend.js', __FILE__),
+            plugins_url('assets/frontend.js', __FILE__),
             array(),
             $this->version,
             true
