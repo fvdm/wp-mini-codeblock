@@ -10,7 +10,7 @@ A lightweight, dependency-free WordPress syntax highlighting plugin.
 - Copy-to-clipboard button
 - Fully responsive
 - Gutenberg block editor support
-- Tiny filesize (~14KB total)
+- Small footprint
 - Optimized for fast page loading
 
 
@@ -51,19 +51,25 @@ The code block will appear with:
 - Syntax highlighting
 - Responsive design
 - Smooth rounded corners
- 
+
+
+### Matomo stats
+
+When you have a Matomo tracker in your page, the copy-button clicks
+will be tracked as events
+
+Category `copy`, name `fmc-code`, value `fmc`
+
+To distinguish code blocks you can replace the value with a
+**Matomo ID** in the editor. Does not have to be unique.
+
 
 ## Technical Details
 
-- **Total size**: ~14KB (uncompressed)
-- **Frontend CSS**: 2.8KB
-- **Frontend JS**: 6.5KB (custom syntax highlighter)
 - **Editor assets**: Only load when editing
 - **Frontend assets**: Only load when block is present on page
 - **Font**: System monospace stack
-- **Padding**: 1rem (adjusts responsively)
-- **Border radius**: 4px
- 
+
 
 ## Browser Support
 
@@ -71,7 +77,7 @@ The code block will appear with:
 - Copy button requires Clipboard API (all modern browsers)
 
 
-## License
+## Unlicense
 
 This is free and unencumbered software released into the public domain.
 
