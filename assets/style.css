@@ -123,7 +123,7 @@
 .fmc-section { color: #ff9e64; font-weight: 600; }
 .fmc-preprocessor { color: #c792ea; }
 
-/* Bash-specific tweaks */
+/* Shell-specific tweaks */
 .fmc-builtin { color: #ff9e64; }   /* builtins like echo, cd */
 .fmc-flag    { color: #7fdbca; }   /* -r, --recursive */
 .fmc-operator{ color: #ff6b9d; }   /* |, &&, >, || */
