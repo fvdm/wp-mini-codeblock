@@ -27,7 +27,7 @@ A lightweight, dependency-free WordPress syntax highlighting plugin.
 ```
 franklin-mini-codeblock/
 ├── franklin-mini-codeblock.php   (Main plugin file)
-└── build/
+└── assets/
     ├── block.json                (Block configuration)
     ├── editor.js                 (Gutenberg editor)
     ├── editor.css                (Editor styles)
