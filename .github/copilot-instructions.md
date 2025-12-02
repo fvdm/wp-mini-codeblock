@@ -15,7 +15,7 @@
 ```
 franklin-mini-codeblock/
 ├── franklin-mini-codeblock.php   # Main plugin file (WordPress entry point)
-├── build/                        # Pre-built assets (DO NOT regenerate)
+├── assets/                       # Pre-built assets (DO NOT regenerate)
 │   ├── block.json               # Gutenberg block configuration
 │   ├── editor.js                # Block editor JavaScript
 │   ├── editor.css               # Block editor styles
@@ -32,11 +32,11 @@ franklin-mini-codeblock/
 | File | Purpose |
 |------|---------|
 | `franklin-mini-codeblock.php` | Main plugin entry point. Registers the block, enqueues assets, and renders output. Contains the `Franklin_Mini_Codeblock` class. |
-| `build/block.json` | Defines block name (`franklin/mini-codeblock`), attributes (`code`, `language`, `id` for Matomo tracking), and asset references. |
-| `build/editor.js` | Gutenberg editor component with language selector and code textarea. |
-| `build/editor.css` | Styles for the block editor interface. |
-| `build/frontend.js` | Client-side syntax highlighter using regex patterns. Handles copy-to-clipboard. |
-| `build/style.css` | Frontend CSS with dark theme, responsive design, and syntax highlighting colors. |
+| `assets/block.json` | Defines block name (`franklin/mini-codeblock`), attributes (`code`, `language`, `id` for Matomo tracking), and asset references. |
+| `assets/editor.js` | Gutenberg editor component with language selector and code textarea. |
+| `assets/editor.css` | Styles for the block editor interface. |
+| `assets/frontend.js` | Client-side syntax highlighter using regex patterns. Handles copy-to-clipboard. |
+| `assets/style.css` | Frontend CSS with dark theme, responsive design, and syntax highlighting colors. |
 
 ## Validation Commands
 
@@ -52,7 +52,7 @@ Expected output: `No syntax errors detected in franklin-mini-codeblock.php`
 ## Development Notes
 
 ### No Build Process
-The `build/` directory contains pre-built, hand-written assets. There is no npm, webpack, or other build tool. Edit these files directly.
+The `assets/` directory contains pre-built, hand-written assets. There is no npm, webpack, or other build tool. Edit these files directly.
 
 ### No Test Infrastructure
 There are no automated tests. Manual testing in a WordPress environment is required.
@@ -61,10 +61,10 @@ There are no automated tests. Manual testing in a WordPress environment is requi
 There are no GitHub Actions workflows. Validation is manual.
 
 ### Supported Languages
-Languages are defined in `build/frontend.js` in the `patterns` object and in `build/editor.js` in the `languages` array. When adding a new language, update both files.
+Languages are defined in `assets/frontend.js` in the `patterns` object and in `assets/editor.js` in the `languages` array. When adding a new language, update both files.
 
 ### Block Rendering
-The PHP `render_block()` method in `franklin-mini-codeblock.php` generates the HTML output. The frontend JavaScript in `build/frontend.js` applies syntax highlighting client-side.
+The PHP `render_block()` method in `franklin-mini-codeblock.php` generates the HTML output. The frontend JavaScript in `assets/frontend.js` applies syntax highlighting client-side.
 
 ### CSS Class Naming
 All CSS classes use the `fmc-` prefix (Franklin Mini Codeblock). Syntax highlighting classes follow the pattern `fmc-{token-type}` (e.g., `fmc-keyword`, `fmc-string`).
@@ -79,15 +79,15 @@ When updating the plugin version, change it in both locations in `franklin-mini-
 | Task | Action |
 |------|--------|
 | Validate PHP | `php -l franklin-mini-codeblock.php` |
-| Add new language | Edit `build/frontend.js` (patterns) and `build/editor.js` (languages array) |
+| Add new language | Edit `assets/frontend.js` (patterns) and `assets/editor.js` (languages array) |
 | Modify block output | Edit `render_block()` in `franklin-mini-codeblock.php` |
-| Change syntax colors | Edit `.fmc-*` classes in `build/style.css` |
-| Update block config | Edit `build/block.json` |
+| Change syntax colors | Edit `.fmc-*` classes in `assets/style.css` |
+| Update block config | Edit `assets/block.json` |
 
 ## Important Constraints
 
 1. **Do not run npm/composer** - This project has no package manager dependencies
-2. **Do not regenerate build/** - Assets are hand-written, not compiled
+2. **Do not regenerate assets/** - Assets are hand-written, not compiled
 3. **Always validate PHP syntax** after editing PHP files
 4. **Preserve the `fmc-` prefix** for all CSS classes
 
