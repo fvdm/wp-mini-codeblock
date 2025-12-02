@@ -1,10 +1,22 @@
-/* wrapper stays fixed, pre scrolls inside */
+/* CSS custom properties for reuse */
 .fmc-wrapper {
+    --fmc-bg: #1a1a1a;
+    --fmc-bg-dark: #0d0d0d;
+    --fmc-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --fmc-pink: #ff6b9d;
+    --fmc-green: #a5d6a7;
+    --fmc-gray: #6a7b8a;
+    --fmc-orange: #ffca80;
+    --fmc-blue: #82aaff;
+    --fmc-peach: #ff9e64;
+    --fmc-teal: #7fdbca;
+    --fmc-purple: #c792ea;
+    --fmc-cyan: #4ec9b0;
     position: relative;
     margin: 1.5rem 0;
     border-radius: 4px;
-    overflow: hidden;            /* clip gradients and pre */
-    background: #1a1a1a;
+    overflow: hidden;
+    background: var(--fmc-bg);
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
@@ -13,13 +25,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1rem;
-    background: #0d0d0d;
+    background: var(--fmc-bg-dark);
 }
 
 .fmc-lang {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-    font-size: 0.75rem;
-    font-weight: 600;
+    font: 600 0.75rem/1 var(--fmc-mono);
     color: #888;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -27,9 +37,7 @@
 
 .fmc-copy {
     padding: 0.4rem 0.85rem;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
+    font: 500 0.8rem/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: #aaa;
     background: #2a2a2a;
     border: 1px solid #3a3a3a;
@@ -48,44 +56,32 @@
     transform: scale(0.97);
 }
 
-/* horizontal scroll still happens here */
 .fmc-pre {
     margin: 0;
     padding: 1rem;
     overflow-x: auto;
-    background: #1a1a1a;
+    background: var(--fmc-bg);
 }
 
-/* right-edge fade: always visible */
+/* Scroll edge fades */
+.fmc-wrapper::before,
 .fmc-wrapper::after {
     content: "";
     position: absolute;
     top: 0;
-    right: 0;
     width: 12px;
     height: 100%;
     pointer-events: none;
-    background: linear-gradient(
-        to left,
-        rgba(0, 0, 0, 0.8),
-        rgba(0, 0, 0, 0)
-    );
 }
 
-/* left-edge fade: only when scrolled */
+.fmc-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(0,0,0,0.8), transparent);
+}
+
 .fmc-wrapper::before {
-    content: "";
-    position: absolute;
-    top: 0;
     left: 0;
-    width: 12px;
-    height: 100%;
-    pointer-events: none;
-    background: linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0.8),
-        rgba(0, 0, 0, 0)
-    );
+    background: linear-gradient(to right, rgba(0,0,0,0.8), transparent);
     opacity: 0;
     transition: opacity 0.15s ease;
 }
@@ -96,9 +92,7 @@
 
 .fmc-code {
     display: block;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-    font-size: 0.9rem;
-    line-height: 1.6;
+    font: 0.9rem/1.6 var(--fmc-mono);
     color: #e8e8e8;
     white-space: pre;
     word-wrap: normal;
@@ -107,88 +101,33 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Syntax highlighting colors - flat, minimal palette */
-.fmc-keyword { color: #ff6b9d; }
-.fmc-string { color: #a5d6a7; }
-.fmc-comment { color: #6a7b8a; font-style: italic; }
-.fmc-number { color: #ffca80; }
-.fmc-function { color: #82aaff; }
-.fmc-literal { color: #ff9e64; }
-.fmc-selector { color: #7fdbca; }
-.fmc-property { color: #c792ea; }
-.fmc-attr { color: #ffca80; }
-.fmc-tag { color: #ff6b9d; }
-.fmc-variable { color: #82aaff; }
-.fmc-type { color: #4ec9b0; }
-.fmc-section { color: #ff9e64; font-weight: 600; }
-.fmc-preprocessor { color: #c792ea; }
+/* Syntax highlighting */
+.fmc-keyword, .fmc-tag, .fmc-operator { color: var(--fmc-pink); }
+.fmc-string, .fmc-url-query, .fmc-url-query-value { color: var(--fmc-green); }
+.fmc-comment { color: var(--fmc-gray); font-style: italic; }
+.fmc-number, .fmc-attr, .fmc-url-port, .fmc-url-query-key, .fmc-url-query-eq { color: var(--fmc-orange); }
+.fmc-function, .fmc-variable, .fmc-url-hash { color: var(--fmc-blue); }
+.fmc-literal, .fmc-builtin, .fmc-url-protocol, .fmc-url-slash, .fmc-url-query-mark, .fmc-url-query-amp { color: var(--fmc-peach); }
+.fmc-selector, .fmc-flag, .fmc-url-host { color: var(--fmc-teal); }
+.fmc-property, .fmc-preprocessor, .fmc-url-path { color: var(--fmc-purple); }
+.fmc-type { color: var(--fmc-cyan); }
+.fmc-section { color: var(--fmc-peach); font-weight: 600; }
 
-/* Shell-specific tweaks */
-.fmc-builtin { color: #ff9e64; }   /* builtins like echo, cd */
-.fmc-flag    { color: #7fdbca; }   /* -r, --recursive */
-.fmc-operator{ color: #ff6b9d; }   /* |, &&, >, || */
-
-/* URL language colors */
-.fmc-url-protocol { color: #ff9e64; }  /* https: */
-.fmc-url-slash    { color: #ff9e64; }  /* / and // */
-.fmc-url-host     { color: #7fdbca; }  /* example.com */
-.fmc-url-port     { color: #ffca80; }  /* :8080 */
-.fmc-url-path     { color: #c792ea; }  /* /path/to/resource */
-.fmc-url-query    { color: #a5d6a7; }  /* ?foo=bar */
-.fmc-url-hash     { color: #82aaff; }  /* #section */
-
-/* URL query details */
-.fmc-url-query-mark  { color: #ff9e64; }  /* ? */
-.fmc-url-query-amp   { color: #ff9e64; }  /* & */
-.fmc-url-query-key   { color: #ffca80; }  /* p, foo */
-.fmc-url-query-eq    { color: #ffca80; }  /* = */
-.fmc-url-query-value { color: #a5d6a7; }  /* 37139, bar */
-
-/* Responsive design */
+/* Responsive */
 @media (max-width: 768px) {
-    .fmc-code {
-        font-size: 0.85rem;
-    }
-
-    .fmc-pre {
-        padding: 1rem 0.75rem;
-    }
-
-    .fmc-header {
-        padding: 0.6rem 0.75rem;
-    }
-
-    .fmc-copy {
-        font-size: 0.75rem;
-        padding: 0.35rem 0.7rem;
-    }
+    .fmc-code { font-size: 0.85rem; }
+    .fmc-pre { padding: 1rem 0.75rem; }
+    .fmc-header { padding: 0.6rem 0.75rem; }
+    .fmc-copy { font-size: 0.75rem; padding: 0.35rem 0.7rem; }
 }
 
 @media (max-width: 480px) {
-    .fmc-code {
-        font-size: 0.8rem;
-    }
-
-    .fmc-wrapper {
-        margin: 1rem -1rem;
-        border-radius: 0;
-    }
+    .fmc-code { font-size: 0.8rem; }
+    .fmc-wrapper { margin: 1rem -1rem; border-radius: 0; }
 }
 
-/* Scrollbar styling */
-.fmc-pre::-webkit-scrollbar {
-    height: 8px;
-}
-
-.fmc-pre::-webkit-scrollbar-track {
-    background: #0d0d0d;
-}
-
-.fmc-pre::-webkit-scrollbar-thumb {
-    background: #3a3a3a;
-    border-radius: 4px;
-}
-
-.fmc-pre::-webkit-scrollbar-thumb:hover {
-    background: #4a4a4a;
-}
+/* Scrollbar */
+.fmc-pre::-webkit-scrollbar { height: 8px; }
+.fmc-pre::-webkit-scrollbar-track { background: var(--fmc-bg-dark); }
+.fmc-pre::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 4px; }
+.fmc-pre::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
