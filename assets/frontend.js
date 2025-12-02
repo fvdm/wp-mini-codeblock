@@ -89,6 +89,7 @@
             { r: /(\$\(|\)|`|\\\()/g, c: 'operator' },
             { r: /\b(\d+)\b/g, c: 'number' }
         ],
+        text: [],
         typescript: [
             { r: /(\/\/.*$)/gm, c: 'comment' },
             { r: /(\/\*[\s\S]*?\*\/)/g, c: 'comment' },
@@ -115,6 +116,10 @@
             { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g, c: 'string' }
         ]
     };
+
+    // aliases
+    patterns.bash = patterns.shell;
+    patterns.plain = patterns.text;
 
     function highlightQuery(q) {
         // q starts as something like "?p=37139&amp;foo=bar"
@@ -162,7 +167,7 @@
 
     
     function highlightCode(code, lang) {
-        if (!patterns[lang]) lang = 'javascript';
+        if (!patterns[lang]) lang = 'text';
     
         let html = escapeHtml(code);
         const tokens = [];
