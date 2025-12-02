@@ -7,7 +7,7 @@
 **Key characteristics:**
 - Zero dependencies (no npm, composer, or external build tools)
 - Pre-built assets committed directly to the repository
-- Total size: ~14KB uncompressed, ~684 lines of code
+- Small size, under 20KB uncompressed
 - License: Unlicense (public domain)
 
 ## Project Structure
