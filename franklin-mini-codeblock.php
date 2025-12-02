@@ -1,11 +1,12 @@
 <?php
 /**
- * Plugin Name: Franklin Mini Codeblock
- * Description: Minimal, fast syntax highlighting with no dependencies
- * Version: 1.3.6
- * Author: Franklin
- * Author URI: https://frankl.in
- * Text Domain: franklin-mini-codeblock
+ * Plugin Name:  Franklin Mini Codeblock
+ * Description:  Minimal, fast syntax highlighting with no dependencies
+ * Version:      1.3.7
+ * Author:       Franklin
+ * Author URI:   https://frankl.in
+ * Text Domain:  franklin-mini-codeblock
+ * License:      Unlicense
  */
 
 if (!defined('ABSPATH')) exit;
@@ -13,10 +14,9 @@ if (!defined('ABSPATH')) exit;
 class Franklin_Mini_Codeblock {
 
     public function __construct() {
-        $this->version = '1.3.6';
+        $this->version = '1.3.7';
 
         add_action('init', array($this, 'register_block'));
-//        add_action('enqueue_block_editor_assets', array($this, 'editor_assets'));
         add_action('wp_enqueue_scripts', array($this, 'frontend_assets'));
     }
 
