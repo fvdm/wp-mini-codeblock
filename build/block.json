@@ -1,0 +1,30 @@
+{
+  "apiVersion": 2,
+  "name": "franklin/mini-codeblock",
+  "title": "Mini Code Block",
+  "category": "formatting",
+  "icon": "editor-code",
+  "description": "Minimal syntax-highlighted code block",
+  "supports": {
+    "html": false,
+    "align": true
+  },
+  "attributes": {
+    "code": {
+      "type": "string",
+      "default": ""
+    },
+    "language": {
+      "type": "string",
+      "default": "javascript"
+    },
+    "id": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "franklin-mini-codeblock",
+  "editorScript": "file:./editor.js",
+  "editorStyle": "file:./editor.css",
+  "style": "file:./style.css"
+}
