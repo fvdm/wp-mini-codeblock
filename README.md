@@ -11,7 +11,7 @@ A lightweight, dependency-free WordPress syntax highlighting plugin.
 - Small footprint
 - Only loaded where needed
 - Optimized for fast page loading and minimal code in the editor
-- Languages: C, CSS, HTML, INI, Javascript, JSON, PHP, Python, Shell, TypeScript, XML
+- Languages: C, CSS, HTML, INI, Javascript, JSON, Lua, PHP, Python, Shell, TypeScript, XML and URL
 - Gutenberg block editor support
 - System monospace font
 
