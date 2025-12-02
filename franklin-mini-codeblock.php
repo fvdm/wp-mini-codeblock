@@ -42,7 +42,7 @@ class Franklin_Mini_Codeblock {
     
         // 3. Build markup – note: NO sprintf placeholders inside code area
         if ( $clean_id ) {
-          $clean_id_attr = ' data-id="fmc-' . $clean_id . '"';
+          $clean_id_attr = ' data-id="' . $clean_id . '"';
         }
 
         $html  = '<div class="fmc-wrapper">';
