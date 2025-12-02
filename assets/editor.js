@@ -17,6 +17,7 @@
         { label: 'PHP', value: 'php' },
         { label: 'Python', value: 'python' },
         { label: 'Shell', value: 'shell' },
+        { label: 'Text', value: 'text' },
         { label: 'TypeScript', value: 'typescript' },
         { label: 'URL', value: 'url' },
         { label: 'XML', value: 'xml' }
