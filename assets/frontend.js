@@ -3,24 +3,13 @@
 
     // Lightweight tokenizer patterns
     const patterns = {
-        javascript: [
-            { r: /([^:]\/\/.*$)/gm, c: 'comment' },
-            { r: /(\/\*[\s\S]*?\*\/)/g, c: 'comment' },
-            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`)/g, c: 'string' },
-            { r: /[^'"]\b([a-zA-Z0-9_]+)\s*:/g, c: 'property' },
-            { r: /\b(const|let|var|function|return|if|else|for|while|class|import|export|from|async|await|new|this|super|extends|static|try|catch|throw|typeof|instanceof|delete|void|yield|break|continue|switch|case|default|do)\b/g, c: 'keyword' },
-            { r: /\b(true|false|null|undefined|NaN|Infinity)\b/g, c: 'literal' },
-            { r: /\b(\d+\.?\d*|\.\d+)\b/g, c: 'number' },
-            { r: /([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, c: 'function' }
-        ],
-        typescript: [
+        c: [
             { r: /(\/\/.*$)/gm, c: 'comment' },
             { r: /(\/\*[\s\S]*?\*\/)/g, c: 'comment' },
-            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`)/g, c: 'string' },
-            { r: /\b(const|let|var|function|return|if|else|for|while|class|import|export|from|async|await|new|this|super|extends|static|interface|type|enum|namespace|public|private|protected|readonly|implements|declare)\b/g, c: 'keyword' },
-            { r: /\b(string|number|boolean|any|void|never|unknown)\b/g, c: 'type' },
-            { r: /\b(true|false|null|undefined|NaN|Infinity)\b/g, c: 'literal' },
-            { r: /\b(\d+\.?\d*|\.\d+)\b/g, c: 'number' }
+            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g, c: 'string' },
+            { r: /\b(int|char|float|double|void|long|short|signed|unsigned|struct|union|enum|typedef|sizeof|if|else|for|while|do|switch|case|default|break|continue|return|goto|const|static|extern|auto|register|volatile|inline|restrict)\b/g, c: 'keyword' },
+            { r: /#\s*(include|define|ifdef|ifndef|endif|pragma)/g, c: 'preprocessor' },
+            { r: /\b(\d+\.?\d*|\.\d+|0x[0-9a-fA-F]+)\b/g, c: 'number' }
         ],
         css: [
             { r: /(\/\*[\s\S]*?\*\/)/g, c: 'comment' },
@@ -35,6 +24,39 @@
             { r: /(<\/?[a-zA-Z][a-zA-Z0-9]*)/g, c: 'tag' },
             { r: /([a-zA-Z-]+)=/g, c: 'attr' },
             { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g, c: 'string' }
+        ],
+        ini: [
+            { r: /(;.*$|#.*$)/gm, c: 'comment' },
+            { r: /(\[[^\]]+\])/g, c: 'section' },
+            { r: /^([a-zA-Z_][a-zA-Z0-9_.]*)(?=\s*=)/gm, c: 'property' },
+            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g, c: 'string' }
+        ],
+        javascript: [
+            { r: /([^:]\/\/.*$)/gm, c: 'comment' },
+            { r: /(\/\*[\s\S]*?\*\/)/g, c: 'comment' },
+            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`)/g, c: 'string' },
+            { r: /[^'"]\b([a-zA-Z0-9_]+)\s*:/g, c: 'property' },
+            { r: /\b(const|let|var|function|return|if|else|for|while|class|import|export|from|async|await|new|this|super|extends|static|try|catch|throw|typeof|instanceof|delete|void|yield|break|continue|switch|case|default|do)\b/g, c: 'keyword' },
+            { r: /\b(true|false|null|undefined|NaN|Infinity)\b/g, c: 'literal' },
+            { r: /\b(\d+\.?\d*|\.\d+)\b/g, c: 'number' },
+            { r: /([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, c: 'function' }
+        ],
+        json: [
+            { r: /"(?:\\.|[^"\\])*"/g, c: 'string' },
+            { r: /\b(true|false|null)\b/g, c: 'literal' },
+            { r: /\b(-?\d+\.?\d*|\.\d+)\b/g, c: 'number' }
+        ],
+        lua: [
+            { r: /(--.*$)/gm, c: 'comment' },
+            { r: /(--\[\[[\s\S]*?\]\])/g, c: 'comment' },
+            { r: /("([^"\\]|\\.)*"|'([^'\\]|\\.)*'|\[\[[\s\S]*?\]\])/g, c: 'string' },
+            { r: /\b(and|break|do|else|elseif|end|false|for|function|goto|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/g, c: 'keyword' },
+            { r: /\b(print|pairs|ipairs|next|type|tostring|tonumber|error|assert|pcall|xpcall|require|dofile|load|loadfile|set)\b/g, c: 'function' },
+            // Standard libraries
+            { r: /\b(string|table|math|os|io|coroutine|debug|package)\b/g, c: 'type' },
+            { r: /\b(\d+\.?\d*|\.\d+|0x[0-9a-fA-F]+)\b/g, c: 'number' },
+            { r: /\b([a-zA-Z_][a-zA-Z0-9_]*)\b(?=\s*[,)=])/g, c: 'variable' },
+            { r: /(\.\.\.|\.{2}|[+\-*\/%^#=<>~]+)/g, c: 'operator' }
         ],
         php: [
             { r: /(#.*$|\/\/.*$)/gm, c: 'comment' },
@@ -52,18 +74,7 @@
             { r: /\b(True|False|None)\b/g, c: 'literal' },
             { r: /\b(\d+\.?\d*|\.\d+)\b/g, c: 'number' }
         ],
-        json: [
-            { r: /"(?:\\.|[^"\\])*"/g, c: 'string' },
-            { r: /\b(true|false|null)\b/g, c: 'literal' },
-            { r: /\b(-?\d+\.?\d*|\.\d+)\b/g, c: 'number' }
-        ],
-        xml: [
-            { r: /(<!--[\s\S]*?-->)/g, c: 'comment' },
-            { r: /(<\/?[a-zA-Z][a-zA-Z0-9:]*)/g, c: 'tag' },
-            { r: /([a-zA-Z:][a-zA-Z0-9:_-]*)=/g, c: 'attr' },
-            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g, c: 'string' }
-        ],
-        bash: [
+        shell: [
             { r: /(#.*$)/gm, c: 'comment' },
             { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g, c: 'string' },
             { r: /^(#!.*)$/gm, c: 'preprocessor' },
@@ -78,19 +89,14 @@
             { r: /(\$\(|\)|`|\\\()/g, c: 'operator' },
             { r: /\b(\d+)\b/g, c: 'number' }
         ],
-        ini: [
-            { r: /(;.*$|#.*$)/gm, c: 'comment' },
-            { r: /(\[[^\]]+\])/g, c: 'section' },
-            { r: /^([a-zA-Z_][a-zA-Z0-9_.]*)(?=\s*=)/gm, c: 'property' },
-            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g, c: 'string' }
-        ],
-        c: [
+        typescript: [
             { r: /(\/\/.*$)/gm, c: 'comment' },
             { r: /(\/\*[\s\S]*?\*\/)/g, c: 'comment' },
-            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g, c: 'string' },
-            { r: /\b(int|char|float|double|void|long|short|signed|unsigned|struct|union|enum|typedef|sizeof|if|else|for|while|do|switch|case|default|break|continue|return|goto|const|static|extern|auto|register|volatile|inline|restrict)\b/g, c: 'keyword' },
-            { r: /#\s*(include|define|ifdef|ifndef|endif|pragma)/g, c: 'preprocessor' },
-            { r: /\b(\d+\.?\d*|\.\d+|0x[0-9a-fA-F]+)\b/g, c: 'number' }
+            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`)/g, c: 'string' },
+            { r: /\b(const|let|var|function|return|if|else|for|while|class|import|export|from|async|await|new|this|super|extends|static|interface|type|enum|namespace|public|private|protected|readonly|implements|declare)\b/g, c: 'keyword' },
+            { r: /\b(string|number|boolean|any|void|never|unknown)\b/g, c: 'type' },
+            { r: /\b(true|false|null|undefined|NaN|Infinity)\b/g, c: 'literal' },
+            { r: /\b(\d+\.?\d*|\.\d+)\b/g, c: 'number' }
         ],
         url: [
             { r: /\b([a-zA-Z][a-zA-Z0-9+.-]*:)(?=\/\/)/g, c: 'url-protocol' },
@@ -102,25 +108,11 @@
             { r: /(\?[^#\s]*)/g, c: 'url-query' },
             { r: /(#[^\s]*)/g, c: 'url-hash' }
         ],
-        lua: [
-            // Single-line comments
-            { r: /(--.*$)/gm, c: 'comment' },
-            // Multi-line comments --[[ ... ]]
-            { r: /(--\[\[[\s\S]*?\]\])/g, c: 'comment' },
-            // Strings: " ", ' ', and [[ ... ]]
-            { r: /("([^"\\]|\\.)*"|'([^'\\]|\\.)*'|\[\[[\s\S]*?\]\])/g, c: 'string' },
-            // Keywords
-            { r: /\b(and|break|do|else|elseif|end|false|for|function|goto|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/g, c: 'keyword' },
-            // Built-in functions (common subset)
-            { r: /\b(print|pairs|ipairs|next|type|tostring|tonumber|error|assert|pcall|xpcall|require|dofile|load|loadfile|set)\b/g, c: 'function' },
-            // Standard libraries (table, string, math, os, io, coroutine, debug, package)
-            { r: /\b(string|table|math|os|io|coroutine|debug|package)\b/g, c: 'type' },
-            // Numbers
-            { r: /\b(\d+\.?\d*|\.\d+|0x[0-9a-fA-F]+)\b/g, c: 'number' },
-            // Variables (simple heuristic: word chars that are not keywords/functions, before = or ()
-            { r: /\b([a-zA-Z_][a-zA-Z0-9_]*)\b(?=\s*[,)=])/g, c: 'variable' },
-            // Operators
-            { r: /(\.\.\.|\.{2}|[+\-*\/%^#=<>~]+)/g, c: 'operator' }
+        xml: [
+            { r: /(<!--[\s\S]*?-->)/g, c: 'comment' },
+            { r: /(<\/?[a-zA-Z][a-zA-Z0-9:]*)/g, c: 'tag' },
+            { r: /([a-zA-Z:][a-zA-Z0-9:_-]*)=/g, c: 'attr' },
+            { r: /('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")/g, c: 'string' }
         ]
     };
 
