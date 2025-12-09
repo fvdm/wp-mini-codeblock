@@ -2,7 +2,7 @@
 /**
  * Plugin Name:  Franklin Mini Codeblock
  * Description:  Minimal, fast syntax highlighting with no dependencies
- * Version:      1.3.11
+ * Version:      1.3.12
  * Author:       Franklin
  * Author URI:   https://frankl.in
  * Text Domain:  franklin-mini-codeblock
@@ -12,7 +12,7 @@
 if (!defined('ABSPATH')) exit;
 
 class Franklin_Mini_Codeblock {
-    private $version = '1.3.11';
+    private $version = '1.3.12';
 
     public function __construct() {
         add_action('init', [$this, 'register_block']);
