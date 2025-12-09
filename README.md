@@ -44,10 +44,10 @@ The code block will appear with:
 When you have a Matomo tracker in your page, the copy-button clicks
 will be tracked as events:
 
-Category `copy`, name `fmc-code` and value `fmc`
+Category `Interface`, name `copy-fmc` and value `code-block`
 
-To distinguish code blocks you can replace the value with a **Matomo ID**
-in the editor. Does not have to be unique.
+To distinguish code blocks you can replace the value with a
+**Matomo ID** in the editor. Does not have to be unique.
 
 
 ## Browser Support
