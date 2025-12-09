@@ -220,7 +220,7 @@
                 var btn = this;
                 var wrapper = btn.closest('.fmc-wrapper');
                 var code = wrapper.querySelector('.fmc-code').textContent;
-                var trackId = btn.getAttribute('data-id') || 'fmc';
+                var trackId = btn.getAttribute('data-id') || 'code-block';
 
                 navigator.clipboard.writeText(code).then(function() {
                     var original = btn.textContent;
@@ -231,7 +231,7 @@
                 // Optional Matomo tracking
                 if (typeof Matomo !== 'undefined') {
                     try {
-                        Matomo.getAsyncTracker().trackEvent('copy', 'fmc-code', trackId);
+                        Matomo.getAsyncTracker().trackEvent('Interface', 'copy-fmc', trackId);
                     } catch (e) {}
                 }
             });
