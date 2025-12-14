@@ -23,6 +23,20 @@
         { label: 'XML', value: 'xml' }
     ];
 
+    // Calculate optimal number of rows for textarea
+    function calculateRows(code) {
+        if (!code) return 3;
+        
+        // Count newlines in the code
+        var lineCount = (code.match(/\n/g) || []).length + 1;
+        
+        // Apply min and max constraints
+        var minRows = 3;
+        var maxRows = 30;
+        
+        return Math.max(minRows, Math.min(maxRows, lineCount));
+    }
+
     wp.blocks.registerBlockType('franklin/mini-codeblock', {
         edit: function(props) {
             var attr = props.attributes;
@@ -45,7 +59,7 @@
                     className: 'fmc-editor-textarea',
                     value: attr.code,
                     onChange: function(v) { set({ code: v }); },
-                    rows: 16
+                    rows: calculateRows(attr.code)
                 })
             );
         },
