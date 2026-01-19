@@ -195,7 +195,8 @@ class Franklin_Mini_Codeblock {
             $language = 'text';
         }
 
-        $html = esc_html( $code );
+        // Start with raw code - we'll escape as we build the output
+        $html = $code;
         $tokens = [];
 
         foreach ( $patterns[ $language ] as $pattern ) {
@@ -216,11 +217,25 @@ class Franklin_Mini_Codeblock {
             }
         }
 
+        // Split by token placeholders to escape unmatched text
+        $parts = preg_split( '/(___FMC_HIGHLIGHT_TOKEN_\d+___)/', $html, -1, PREG_SPLIT_DELIM_CAPTURE );
+        $html = '';
+        
+        foreach ( $parts as $part ) {
+            if ( preg_match( '/^___FMC_HIGHLIGHT_TOKEN_(\d+)___$/', $part, $m ) ) {
+                // This is a token placeholder - keep it as is
+                $html .= $part;
+            } else {
+                // This is unmatched text - escape it
+                $html .= esc_html( $part );
+            }
+        }
+
         foreach ( $tokens as $index => $token ) {
             $placeholder = '___FMC_HIGHLIGHT_TOKEN_' . $index . '___';
             $inner = ( $language === 'url' && $token['className'] === 'url-query' )
-                ? $this->highlight_query( $token['match'] )
-                : $token['match'];
+                ? $this->highlight_query( esc_html( $token['match'] ) )
+                : esc_html( $token['match'] );
             $html = str_replace(
                 $placeholder,
                 '<span class="fmc-' . esc_attr( $token['className'] ) . '">' . $inner . '</span>',
@@ -231,7 +246,7 @@ class Franklin_Mini_Codeblock {
         // Safety pass for any remaining placeholders
         $html = preg_replace_callback( '/___FMC_HIGHLIGHT_TOKEN_(\d+)___/', function( $matches ) use ( $tokens ) {
             $idx = intval( $matches[1] );
-            return isset( $tokens[ $idx ] ) ? $tokens[ $idx ]['match'] : '';
+            return isset( $tokens[ $idx ] ) ? esc_html( $tokens[ $idx ]['match'] ) : '';
         }, $html );
 
         return $html;
