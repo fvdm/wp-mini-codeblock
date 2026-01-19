@@ -13,10 +13,21 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Franklin_Mini_Codeblock {
     private $version = '1.4.0';
+    private $language_patterns;
 
     public function __construct() {
         add_action( 'init', [ $this, 'register_block' ] );
         add_action( 'wp_enqueue_scripts', [ $this, 'frontend_assets' ] );
+        register_deactivation_hook( __FILE__, [ $this, 'deactivate' ] );
+        
+        // Initialize language patterns once to avoid recreating on every render
+        $this->language_patterns = $this->init_language_patterns();
+    }
+    
+    public function deactivate() {
+        // Clean up transient cache on deactivation
+        global $wpdb;
+        $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_fmc_%' OR option_name LIKE '_transient_timeout_fmc_%'" );
     }
 
     public function register_block() {
@@ -25,7 +36,7 @@ class Franklin_Mini_Codeblock {
         ] );
     }
 
-    private function get_language_patterns() {
+    private function init_language_patterns() {
         return [
             'c' => [
                 ['r' => '/(\/\/.*$)/m', 'c' => 'comment'],
@@ -59,7 +70,7 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/([^:]\/\/.*$)/m', 'c' => 'comment'],
                 ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
                 ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*"|`(?:\\\\.|[^`\\\\])*`)/s', 'c' => 'string'],
-                ['r' => '/[^\'"]\b([a-zA-Z0-9_]+)\s*:/', 'c' => 'property'],
+                ['r' => '/(?<![\'"])\b([a-zA-Z0-9_]+)\s*:/', 'c' => 'property'],
                 ['r' => '/\b(const|let|var|function|return|if|else|for|while|class|import|export|from|async|await|new|this|super|extends|static|try|catch|throw|typeof|instanceof|delete|void|yield|break|continue|switch|case|default|do)\b/', 'c' => 'keyword'],
                 ['r' => '/\b(true|false|null|undefined|NaN|Infinity)\b/', 'c' => 'literal'],
                 ['r' => '/\b(\d+\.?\d*|\.\d+)\b/', 'c' => 'number'],
@@ -102,11 +113,11 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'],
                 ['r' => '/^(#!.*)$/m', 'c' => 'preprocessor'],
                 ['r' => '/\b(if|then|else|elif|fi|for|while|until|do|done|case|esac|select|function|in)\b/', 'c' => 'keyword'],
-                ['r' => '/\b(echo|printf|read|cd|rm|exit|return|source|alias|unalias|export|unset|shift|getopts|test|sudo|chmod|chown)\b/', 'c' => 'builtin'],
+                ['r' => '/\b(echo|printf|read|cd|rm|exit|return|source|alias|unalias|export|unset|shift|getopts|test|sudo( [A-Za-z0-9_\.\/-]+)?|chmod|chown|\[\])\b/', 'c' => 'builtin'],
                 ['r' => '/\b(ls|cat|grep|awk|sed|find|xargs|tail|head|screen|dtach|curl|wget|ssh|scp|tar|zip|unzip|make|defaults|docker|kubectl|tmutil|pbcopy|pbpaste|node|npm)\b/', 'c' => 'function'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*|\${[^}]+})/', 'c' => 'variable'],
                 ['r' => '/\s(--[a-zA-Z0-9\-]+|\-[a-zA-Z]+)/', 'c' => 'flag'],
-                ['r' => '/(\|\||&&|;|\||>>|>|<|2>>?|&>)/', 'c' => 'operator'],
+                ['r' => '/(\|\||&&|2>>|>>|&>|2>|;|\||>|<)/', 'c' => 'operator'],
                 ['r' => '/(\$\(|\)|`|\\\()/', 'c' => 'operator'],
                 ['r' => '/\b(\d+)\b/', 'c' => 'number']
             ],
@@ -126,7 +137,6 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(?<=\/\/)([^\s\/:?#]+)/', 'c' => 'url-host'],
                 ['r' => '/(:\d{2,5})(?=\/|[?#]|\s|$)/', 'c' => 'url-port'],
                 ['r' => '/(?<=\/)([^\/\s?#]+)(?=(\/|\?|#|$))/', 'c' => 'url-path'],
-                ['r' => '/\//', 'c' => 'url-slash'],
                 ['r' => '/(\?[^#\s]*)/', 'c' => 'url-query'],
                 ['r' => '/(#[^\s]*)/', 'c' => 'url-hash']
             ],
@@ -140,6 +150,7 @@ class Franklin_Mini_Codeblock {
     }
 
     private function highlight_query( $query ) {
+        // Note: Input is already HTML-escaped in highlight_code() before tokenization
         if ( ! preg_match( '/^\?(.*)$/', $query, $matches ) ) {
             return $query;
         }
@@ -174,7 +185,7 @@ class Franklin_Mini_Codeblock {
     }
 
     private function highlight_code( $code, $language ) {
-        $patterns = $this->get_language_patterns();
+        $patterns = $this->language_patterns;
         
         // Add aliases
         $patterns['bash'] = $patterns['shell'];
@@ -191,6 +202,8 @@ class Franklin_Mini_Codeblock {
             $regex = $pattern['r'];
             $class = $pattern['c'];
             
+            // Token placeholder uses ___TOKEN_N___ format
+            // Note: Extremely unlikely to conflict with actual code content
             $html = preg_replace_callback( $regex, function( $matches ) use ( &$tokens, $class ) {
                 $token_id = '___TOKEN_' . count( $tokens ) . '___';
                 $tokens[] = [ 'match' => $matches[0], 'className' => $class ];
@@ -220,7 +233,8 @@ class Franklin_Mini_Codeblock {
     }
 
     private function get_cache_key( $code, $language ) {
-        return 'fmc_' . md5( $code . $language . $this->version );
+        // Use delimiters between components to avoid ambiguous concatenations
+        return 'fmc_' . md5( $code . '|' . $language . '|' . $this->version );
     }
 
     public function render_block( $attributes, $content ) {
