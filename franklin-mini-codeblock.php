@@ -9,20 +9,20 @@
  * License:      Unlicense
  */
 
-if (!defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Franklin_Mini_Codeblock {
     private $version = '1.4.0';
 
     public function __construct() {
-        add_action('init', [$this, 'register_block']);
-        add_action('wp_enqueue_scripts', [$this, 'frontend_assets']);
+        add_action( 'init', [ $this, 'register_block' ] );
+        add_action( 'wp_enqueue_scripts', [ $this, 'frontend_assets' ] );
     }
 
     public function register_block() {
-        register_block_type(__DIR__ . '/assets', [
-            'render_callback' => [$this, 'render_block']
-        ]);
+        register_block_type( __DIR__ . '/assets', [
+            'render_callback' => [ $this, 'render_block' ]
+        ] );
     }
 
     private function get_language_patterns() {
@@ -139,29 +139,29 @@ class Franklin_Mini_Codeblock {
         ];
     }
 
-    private function highlight_query($query) {
-        if (!preg_match('/^\?(.*)$/', $query, $matches)) {
+    private function highlight_query( $query ) {
+        if ( ! preg_match( '/^\?(.*)$/', $query, $matches ) ) {
             return $query;
         }
 
         $rest = $matches[1];
         $output = '<span class="fmc-url-query-mark">?</span>';
         
-        if (!$rest) {
+        if ( ! $rest ) {
             return $output;
         }
 
-        $parts = preg_split('/(&amp;)/', $rest, -1, PREG_SPLIT_DELIM_CAPTURE);
-        foreach ($parts as $part) {
-            if ($part === '&amp;') {
+        $parts = preg_split( '/(&amp;)/', $rest, -1, PREG_SPLIT_DELIM_CAPTURE );
+        foreach ( $parts as $part ) {
+            if ( $part === '&amp;' ) {
                 $output .= '<span class="fmc-url-query-amp">&amp;</span>';
-            } elseif ($part) {
-                if (preg_match('/^([^=]+)(=(.*))?$/', $part, $m)) {
+            } elseif ( $part ) {
+                if ( preg_match( '/^([^=]+)(=(.*))?$/', $part, $m ) ) {
                     $output .= '<span class="fmc-url-query-key">' . $m[1] . '</span>';
-                    if (isset($m[2]) && $m[2]) {
+                    if ( isset( $m[2] ) && $m[2] ) {
                         $output .= '<span class="fmc-url-query-eq">=</span>';
                     }
-                    if (isset($m[3]) && $m[3]) {
+                    if ( isset( $m[3] ) && $m[3] ) {
                         $output .= '<span class="fmc-url-query-value">' . $m[3] . '</span>';
                     }
                 } else {
@@ -173,74 +173,74 @@ class Franklin_Mini_Codeblock {
         return $output;
     }
 
-    private function highlight_code($code, $language) {
+    private function highlight_code( $code, $language ) {
         $patterns = $this->get_language_patterns();
         
         // Add aliases
         $patterns['bash'] = $patterns['shell'];
         $patterns['plain'] = $patterns['text'];
 
-        if (!isset($patterns[$language])) {
+        if ( ! isset( $patterns[ $language ] ) ) {
             $language = 'text';
         }
 
-        $html = esc_html($code);
+        $html = esc_html( $code );
         $tokens = [];
 
-        foreach ($patterns[$language] as $pattern) {
+        foreach ( $patterns[ $language ] as $pattern ) {
             $regex = $pattern['r'];
             $class = $pattern['c'];
             
-            $html = preg_replace_callback($regex, function($matches) use (&$tokens, $class) {
-                $token_id = '___TOKEN_' . count($tokens) . '___';
-                $tokens[] = ['match' => $matches[0], 'className' => $class];
+            $html = preg_replace_callback( $regex, function( $matches ) use ( &$tokens, $class ) {
+                $token_id = '___TOKEN_' . count( $tokens ) . '___';
+                $tokens[] = [ 'match' => $matches[0], 'className' => $class ];
                 return $token_id;
-            }, $html);
+            }, $html );
         }
 
-        foreach ($tokens as $index => $token) {
+        foreach ( $tokens as $index => $token ) {
             $placeholder = '___TOKEN_' . $index . '___';
-            $inner = ($language === 'url' && $token['className'] === 'url-query')
-                ? $this->highlight_query($token['match'])
+            $inner = ( $language === 'url' && $token['className'] === 'url-query' )
+                ? $this->highlight_query( $token['match'] )
                 : $token['match'];
             $html = str_replace(
                 $placeholder,
-                '<span class="fmc-' . esc_attr($token['className']) . '">' . $inner . '</span>',
+                '<span class="fmc-' . esc_attr( $token['className'] ) . '">' . $inner . '</span>',
                 $html
             );
         }
 
         // Safety pass for any remaining placeholders
-        $html = preg_replace_callback('/___TOKEN_(\d+)___/', function($matches) use ($tokens) {
-            $idx = intval($matches[1]);
-            return isset($tokens[$idx]) ? $tokens[$idx]['match'] : '';
-        }, $html);
+        $html = preg_replace_callback( '/___TOKEN_(\d+)___/', function( $matches ) use ( $tokens ) {
+            $idx = intval( $matches[1] );
+            return isset( $tokens[ $idx ] ) ? $tokens[ $idx ]['match'] : '';
+        }, $html );
 
         return $html;
     }
 
-    private function get_cache_key($code, $language) {
-        return 'fmc_' . md5($code . $language . $this->version);
+    private function get_cache_key( $code, $language ) {
+        return 'fmc_' . md5( $code . $language . $this->version );
     }
 
-    public function render_block($attributes, $content) {
-        $code = isset($attributes['code']) ? (string) $attributes['code'] : '';
-        if ($code === '') {
+    public function render_block( $attributes, $content ) {
+        $code = isset( $attributes['code'] ) ? (string) $attributes['code'] : '';
+        if ( $code === '' ) {
             return '';
         }
 
-        $id = isset($attributes['id']) ? (string) $attributes['id'] : '';
-        $language = isset($attributes['language']) ? (string) $attributes['language'] : 'javascript';
-        $clean_id = $id ? str_replace(' ', '-', strip_tags($id)) : '';
-        $id_attr = $clean_id ? ' data-id="' . esc_attr($clean_id) . '"' : '';
+        $id = isset( $attributes['id'] ) ? (string) $attributes['id'] : '';
+        $language = isset( $attributes['language'] ) ? (string) $attributes['language'] : 'javascript';
+        $clean_id = $id ? str_replace( ' ', '-', strip_tags( $id ) ) : '';
+        $id_attr = $clean_id ? ' data-id="' . esc_attr( $clean_id ) . '"' : '';
 
         // Check cache
-        $cache_key = $this->get_cache_key($code, $language);
-        $highlighted = get_transient($cache_key);
+        $cache_key = $this->get_cache_key( $code, $language );
+        $highlighted = get_transient( $cache_key );
 
-        if ($highlighted === false) {
-            $highlighted = $this->highlight_code($code, $language);
-            set_transient($cache_key, $highlighted, WEEK_IN_SECONDS);
+        if ( $highlighted === false ) {
+            $highlighted = $this->highlight_code( $code, $language );
+            set_transient( $cache_key, $highlighted, WEEK_IN_SECONDS );
         }
 
         // Security note: $highlighted contains HTML spans generated by highlight_code()
@@ -258,20 +258,20 @@ class Franklin_Mini_Codeblock {
     }
 
     public function frontend_assets() {
-        if (!has_block('franklin/mini-codeblock')) {
+        if ( ! has_block( 'franklin/mini-codeblock' ) ) {
             return;
         }
 
         wp_enqueue_style(
             'franklin-mini-codeblock-style',
-            plugins_url('assets/style.css', __FILE__),
+            plugins_url( 'assets/style.css', __FILE__ ),
             [],
             $this->version
         );
 
         wp_enqueue_script(
             'franklin-mini-codeblock-frontend',
-            plugins_url('assets/frontend.js', __FILE__),
+            plugins_url( 'assets/frontend.js', __FILE__ ),
             [],
             $this->version,
             true
