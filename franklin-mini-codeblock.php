@@ -202,17 +202,17 @@ class Franklin_Mini_Codeblock {
             $regex = $pattern['r'];
             $class = $pattern['c'];
             
-            // Token placeholder uses ___TOKEN_N___ format
-            // Note: Extremely unlikely to conflict with actual code content
+            // Token placeholder uses ___FMC_HIGHLIGHT_TOKEN_N___ format
+            // Note: Includes plugin shortname to make collisions extremely unlikely
             $html = preg_replace_callback( $regex, function( $matches ) use ( &$tokens, $class ) {
-                $token_id = '___TOKEN_' . count( $tokens ) . '___';
+                $token_id = '___FMC_HIGHLIGHT_TOKEN_' . count( $tokens ) . '___';
                 $tokens[] = [ 'match' => $matches[0], 'className' => $class ];
                 return $token_id;
             }, $html );
         }
 
         foreach ( $tokens as $index => $token ) {
-            $placeholder = '___TOKEN_' . $index . '___';
+            $placeholder = '___FMC_HIGHLIGHT_TOKEN_' . $index . '___';
             $inner = ( $language === 'url' && $token['className'] === 'url-query' )
                 ? $this->highlight_query( $token['match'] )
                 : $token['match'];
@@ -224,7 +224,7 @@ class Franklin_Mini_Codeblock {
         }
 
         // Safety pass for any remaining placeholders
-        $html = preg_replace_callback( '/___TOKEN_(\d+)___/', function( $matches ) use ( $tokens ) {
+        $html = preg_replace_callback( '/___FMC_HIGHLIGHT_TOKEN_(\d+)___/', function( $matches ) use ( $tokens ) {
             $idx = intval( $matches[1] );
             return isset( $tokens[ $idx ] ) ? $tokens[ $idx ]['match'] : '';
         }, $html );
