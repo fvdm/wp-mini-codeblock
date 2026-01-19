@@ -204,11 +204,16 @@ class Franklin_Mini_Codeblock {
             
             // Token placeholder uses ___FMC_HIGHLIGHT_TOKEN_N___ format
             // Note: Includes plugin shortname to make collisions extremely unlikely
-            $html = preg_replace_callback( $regex, function( $matches ) use ( &$tokens, $class ) {
+            $result = preg_replace_callback( $regex, function( $matches ) use ( &$tokens, $class ) {
                 $token_id = '___FMC_HIGHLIGHT_TOKEN_' . count( $tokens ) . '___';
                 $tokens[] = [ 'match' => $matches[0], 'className' => $class ];
                 return $token_id;
             }, $html );
+            
+            // Only update $html if preg_replace_callback succeeded
+            if ( $result !== null ) {
+                $html = $result;
+            }
         }
 
         foreach ( $tokens as $index => $token ) {
