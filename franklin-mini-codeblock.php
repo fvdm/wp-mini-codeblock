@@ -113,7 +113,7 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'],
                 ['r' => '/^(#!.*)$/m', 'c' => 'preprocessor'],
                 ['r' => '/\b(if|then|else|elif|fi|for|while|until|do|done|case|esac|select|function|in)\b/', 'c' => 'keyword'],
-                ['r' => '/\b(echo|printf|read|cd|rm|exit|return|source|alias|unalias|export|unset|shift|getopts|test|sudo( [A-Za-z0-9_\.\/-]+)?|chmod|chown|\[\])\b/', 'c' => 'builtin'],
+                ['r' => '/\b(echo|printf|read|cd|rm|exit|return|source|alias|unalias|export|unset|shift|getopts|test|sudo( [A-Za-z0-9_\.\/-]+)?|chmod|chown)\b|[\[\]]{1,2}/', 'c' => 'builtin'],
                 ['r' => '/\b(ls|cat|grep|awk|sed|find|xargs|tail|head|screen|dtach|curl|wget|ssh|scp|tar|zip|unzip|make|defaults|docker|kubectl|tmutil|pbcopy|pbpaste|node|npm)\b/', 'c' => 'function'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*|\${[^}]+})/', 'c' => 'variable'],
                 ['r' => '/\s(--[a-zA-Z0-9\-]+|\-[a-zA-Z]+)/', 'c' => 'flag'],
