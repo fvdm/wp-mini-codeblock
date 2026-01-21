@@ -41,7 +41,7 @@ class Franklin_Mini_Codeblock {
             'c' => [
                 ['r' => '/(\/\/.*$)/m', 'c' => 'comment'],
                 ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'],
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
                 ['r' => '/\b(int|char|float|double|void|long|short|signed|unsigned|struct|union|enum|typedef|sizeof|if|else|for|while|do|switch|case|default|break|continue|return|goto|const|static|extern|auto|register|volatile|inline|restrict)\b/', 'c' => 'keyword'],
                 ['r' => '/#\s*(include|define|ifdef|ifndef|endif|pragma)/', 'c' => 'preprocessor'],
                 ['r' => '/\b(\d+\.?\d*|\.\d+|0x[0-9a-fA-F]+)\b/', 'c' => 'number']
@@ -50,7 +50,7 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
                 ['r' => '/([.#][a-zA-Z][a-zA-Z0-9_-]*)/', 'c' => 'selector'],
                 ['r' => '/([a-zA-Z-]+)\s*:/', 'c' => 'property'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'],
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
                 ['r' => '/#[0-9a-fA-F]{3,8}\b/', 'c' => 'number'],
                 ['r' => '/\b(\d+(?:px|em|rem|%|vh|vw|pt)?)/', 'c' => 'number']
             ],
@@ -58,18 +58,18 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(<!--[\s\S]*?-->)/s', 'c' => 'comment'],
                 ['r' => '/(<\/?[a-zA-Z][a-zA-Z0-9]*)/', 'c' => 'tag'],
                 ['r' => '/([a-zA-Z-]+)=/', 'c' => 'attr'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string']
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'] // Fixed: Added ^ to properly negate character class for single quotes
             ],
             'ini' => [
                 ['r' => '/(;.*$|#.*$)/m', 'c' => 'comment'],
                 ['r' => '/(\[[^\]]+\])/', 'c' => 'section'],
                 ['r' => '/^([a-zA-Z_][a-zA-Z0-9_.]*)(?=\s*=)/m', 'c' => 'property'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string']
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'] // Fixed: Added ^ to properly negate character class for single quotes
             ],
             'javascript' => [
                 ['r' => '/([^:]\/\/.*$)/m', 'c' => 'comment'],
                 ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*"|`(?:\\\\.|[^`\\\\])*`)/s', 'c' => 'string'],
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*"|`(?:\\\\.|[^`\\\\])*`)/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
                 ['r' => '/(?<![\'"])\b([a-zA-Z0-9_]+)\s*:/', 'c' => 'property'],
                 ['r' => '/\b(const|let|var|function|return|if|else|for|while|class|import|export|from|async|await|new|this|super|extends|static|try|catch|throw|typeof|instanceof|delete|void|yield|break|continue|switch|case|default|do)\b/', 'c' => 'keyword'],
                 ['r' => '/\b(true|false|null|undefined|NaN|Infinity)\b/', 'c' => 'literal'],
@@ -95,7 +95,7 @@ class Franklin_Mini_Codeblock {
             'php' => [
                 ['r' => '/(#.*$|\/\/.*$)/m', 'c' => 'comment'],
                 ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'],
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
                 ['r' => '/\b(class|function|public|private|protected|static|const|return|if|else|foreach|while|new|namespace|use|trait|interface|extends|implements|echo|print|require|include)\b/', 'c' => 'keyword'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*)/', 'c' => 'variable'],
                 ['r' => '/\b(\d+\.?\d*|\.\d+)\b/', 'c' => 'number']
@@ -103,7 +103,7 @@ class Franklin_Mini_Codeblock {
             'python' => [
                 ['r' => '/(#.*$)/m', 'c' => 'comment'],
                 ['r' => "/('''[\\s\\S]*?'''|\"\"\"[\\s\\S]*?\"\"\")/s", 'c' => 'string'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'],
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
                 ['r' => '/\b(def|class|import|from|return|if|elif|else|for|while|in|try|except|finally|with|as|lambda|yield|async|await|pass|break|continue|global|nonlocal)\b/', 'c' => 'keyword'],
                 ['r' => '/\b(True|False|None)\b/', 'c' => 'literal'],
                 ['r' => '/\b(\d+\.?\d*|\.\d+)\b/', 'c' => 'number']
@@ -111,7 +111,7 @@ class Franklin_Mini_Codeblock {
             'shell' => [
                 ['r' => '/^(#!.*)$/m', 'c' => 'preprocessor'],
                 ['r' => '/(#.*$)/m', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'],
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
                 ['r' => '/\b(if|then|else|elif|fi|for|while|until|do|done|case|esac|select|function|in)\b/', 'c' => 'keyword'],
                 ['r' => '/\b(echo|printf|read|cd|rm|exit|return|source|alias|unalias|export|unset|shift|getopts|test|sudo|chmod|chown)\b/', 'c' => 'builtin'],
                 ['r' => '/([\[\]]{1,2})/', 'c' => 'builtin'],
@@ -126,7 +126,7 @@ class Franklin_Mini_Codeblock {
             'typescript' => [
                 ['r' => '/(\/\/.*$)/m', 'c' => 'comment'],
                 ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*"|`(?:\\\\.|[^`\\\\])*`)/s', 'c' => 'string'],
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*"|`(?:\\\\.|[^`\\\\])*`)/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
                 ['r' => '/\b(const|let|var|function|return|if|else|for|while|class|import|export|from|async|await|new|this|super|extends|static|interface|type|enum|namespace|public|private|protected|readonly|implements|declare)\b/', 'c' => 'keyword'],
                 ['r' => '/\b(string|number|boolean|any|void|never|unknown)\b/', 'c' => 'type'],
                 ['r' => '/\b(true|false|null|undefined|NaN|Infinity)\b/', 'c' => 'literal'],
@@ -146,7 +146,7 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(<!--[\s\S]*?-->)/s', 'c' => 'comment'],
                 ['r' => '/(<\/?[a-zA-Z][a-zA-Z0-9:]*)/', 'c' => 'tag'],
                 ['r' => '/([a-zA-Z:][a-zA-Z0-9:_-]*)=/', 'c' => 'attr'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string']
+                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'] // Fixed: Added ^ to properly negate character class for single quotes
             ]
         ];
     }

@@ -109,7 +109,14 @@ $patterns = $init_patterns_method->invoke( $instance );
 $patterns_property->setValue( $instance, $patterns );
 
 // Read the CSS file
-$css = file_get_contents( __DIR__ . '/../assets/style.css' );
+$css_file = __DIR__ . '/../assets/style.css';
+if ( ! file_exists( $css_file ) ) {
+    die( "Error: CSS file not found at $css_file\n" );
+}
+$css = file_get_contents( $css_file );
+if ( $css === false ) {
+    die( "Error: Failed to read CSS file at $css_file\n" );
+}
 
 // Generate HTML
 $html = '<!DOCTYPE html>
@@ -238,8 +245,18 @@ $html .= '
 ';
 
 // Write the output file
-$output_file = __DIR__ . '/../examples/shell-test.html';
-file_put_contents( $output_file, $html );
+$output_dir = __DIR__ . '/../examples';
+$output_file = $output_dir . '/shell-test.html';
+
+if ( ! is_dir( $output_dir ) ) {
+    if ( ! mkdir( $output_dir, 0755, true ) ) {
+        die( "Error: Failed to create examples directory at $output_dir\n" );
+    }
+}
+
+if ( file_put_contents( $output_file, $html ) === false ) {
+    die( "Error: Failed to write output file at $output_file\n" );
+}
 
 echo "✓ Generated " . $output_file . "\n";
 echo "  Open this file in a browser to verify the syntax highlighting.\n";
