@@ -119,7 +119,7 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*|\${[^}]+})/', 'c' => 'variable'],
                 ['r' => '/\s(--[a-zA-Z0-9\-]+|\-[a-zA-Z]+)/', 'c' => 'flag'],
                 ['r' => '/(\|\||&&|2>>|>>|&>|2>|;|\||>|<)/', 'c' => 'operator'],
-                ['r' => '/(\$\(|\)|`)/', 'c' => 'operator'],
+                ['r' => '/(\$\(|\(|\)|`)/', 'c' => 'operator'], // Fixed: Added \( to match opening parentheses
                 ['r' => '/\b(\d+)\b/', 'c' => 'number']
             ],
             'text' => [],
