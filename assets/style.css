@@ -112,6 +112,8 @@
 .fmc-property, .fmc-preprocessor, .fmc-url-path { color: var(--fmc-purple); }
 .fmc-type { color: var(--fmc-cyan); }
 .fmc-section { color: var(--fmc-peach); font-weight: 600; }
+.fmc-path-slash { color: var(--fmc-peach); }
+.fmc-path-filename { font-weight: 700; }
 
 /* Responsive */
 @media (max-width: 768px) {

@@ -236,6 +236,12 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/\b(True|False|None)\b/', 'c' => 'literal'],
                 ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number']
             ],
+            'path' => [
+                // Highlight slashes in orange/peach
+                ['r' => '/\//', 'c' => 'path-slash'],
+                // Make the last segment (filename) bold
+                ['r' => '/([^\/\n]+)$/m', 'c' => 'path-filename']
+            ],
             'shell' => [
                 ['r' => '/^(#!.*)$/m', 'c' => 'preprocessor'],
                 ['r' => $this->common_patterns['comment_line_hash'], 'c' => 'comment'],
