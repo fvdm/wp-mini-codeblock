@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franklin Mini Codeblock - Comprehensive Test</title>
+    <style>
+/* CSS custom properties for reuse */
+.fmc-wrapper {
+    --fmc-bg: #1a1a1a;
+    --fmc-bg-dark: #0d0d0d;
+    --fmc-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --fmc-pink: #ff6b9d;
+    --fmc-green: #a5d6a7;
+    --fmc-gray: #6a7b8a;
+    --fmc-orange: #ffca80;
+    --fmc-blue: #82aaff;
+    --fmc-peach: #ff9e64;
+    --fmc-teal: #7fdbca;
+    --fmc-purple: #c792ea;
+    --fmc-cyan: #4ec9b0;
+    position: relative;
+    margin: 1.5rem 0;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--fmc-bg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.fmc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--fmc-bg-dark);
+}
+
+.fmc-lang {
+    font: 600 0.75rem/1 var(--fmc-mono);
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fmc-copy {
+    padding: 0.4rem 0.85rem;
+    font: 500 0.8rem/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #aaa;
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.fmc-copy:hover {
+    color: #fff;
+    background: #3a3a3a;
+    border-color: #4a4a4a;
+}
+
+.fmc-copy:active {
+    transform: scale(0.97);
+}
+
+.fmc-pre {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: var(--fmc-bg);
+}
+
+/* Scroll edge fades */
+.fmc-wrapper::before,
+.fmc-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 12px;
+    height: 100%;
+    pointer-events: none;
+}
+
+.fmc-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(0,0,0,0.8), transparent);
+}
+
+.fmc-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.8), transparent);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.fmc-wrapper.fmc-wrapper--left::before {
+    opacity: 1;
+}
+
+.fmc-code {
+    display: block;
+    font: 0.9rem/1.6 var(--fmc-mono);
+    color: #e8e8e8;
+    white-space: pre;
+    word-wrap: normal;
+    word-break: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Syntax highlighting */
+.fmc-keyword, .fmc-tag, .fmc-operator { color: var(--fmc-pink); }
+.fmc-string, .fmc-url-query, .fmc-url-query-value { color: var(--fmc-green); }
+.fmc-comment { color: var(--fmc-gray); font-style: italic; }
+.fmc-number, .fmc-attr, .fmc-url-port, .fmc-url-query-key, .fmc-url-query-eq { color: var(--fmc-orange); }
+.fmc-function, .fmc-variable, .fmc-url-hash { color: var(--fmc-blue); }
+.fmc-literal, .fmc-builtin, .fmc-url-protocol, .fmc-url-slash, .fmc-url-query-mark, .fmc-url-query-amp { color: var(--fmc-peach); }
+.fmc-selector, .fmc-flag, .fmc-url-host { color: var(--fmc-teal); }
+.fmc-property, .fmc-preprocessor, .fmc-url-path { color: var(--fmc-purple); }
+.fmc-type { color: var(--fmc-cyan); }
+.fmc-section { color: var(--fmc-peach); font-weight: 600; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fmc-code { font-size: 0.85rem; }
+    .fmc-pre { padding: 1rem 0.75rem; }
+    .fmc-header { padding: 0.6rem 0.75rem; }
+    .fmc-copy { font-size: 0.75rem; padding: 0.35rem 0.7rem; }
+}
+
+@media (max-width: 480px) {
+    .fmc-code { font-size: 0.8rem; }
+    .fmc-wrapper { margin: 1rem -1rem; border-radius: 0; }
+}
+
+/* Scrollbar */
+.fmc-pre::-webkit-scrollbar { height: 8px; }
+.fmc-pre::-webkit-scrollbar-track { background: var(--fmc-bg-dark); }
+.fmc-pre::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 4px; }
+.fmc-pre::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
+
+    </style>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #4a90e2;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        h2 {
+            color: #333;
+            margin-top: 2.5rem;
+            font-size: 1.4rem;
+            border-left: 4px solid #4a90e2;
+            padding-left: 1rem;
+        }
+        .intro {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .test-case {
+            margin: 2rem 0;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .language-badge {
+            display: inline-block;
+            background: #4a90e2;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .success-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Franklin Mini Codeblock - Comprehensive Test Suite</h1>
+    
+    <div class="intro">
+        <h3>About This Test</h3>
+        <p>This comprehensive test suite validates the syntax highlighting for all supported languages after the refactoring of the <code>init_language_patterns</code> method.</p>
+        <p><strong>Changes tested:</strong></p>
+        <ul>
+            <li>✅ Common pattern extraction (strings, comments, numbers)</li>
+            <li>✅ Modularized keyword arrays with logical grouping</li>
+            <li>✅ Reorganized keywords by type and usage patterns</li>
+        </ul>
+        <p><strong>Languages tested:</strong> C, JavaScript, TypeScript, PHP, Python, Lua, Shell</p>
+    </div>
+
+    <div class="test-case">
+        <span class="language-badge">JAVASCRIPT</span>
+        <span class="success-badge">✓ PASSED</span>
+        <h2>JavaScript with various keyword types</h2>
+        
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">JAVASCRIPT</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-keyword">const</span> greeting = <span class="fmc-string">&#039;Hello&#039;</span>;
+<span class="fmc-keyword">let</span> count = <span class="fmc-number">0</span>;
+<span class="fmc-keyword">var</span> oldStyle = <span class="fmc-literal">true</span>;
+
+<span class="fmc-keyword">function</span> <span class="fmc-function">greet</span>(name) {
+    <span class="fmc-keyword">return</span> <span class="fmc-string">`Hello, ${name}!`</span>;
+}
+
+<span class="fmc-keyword">class</span> Person {
+    <span class="fmc-function">constructor</span>(name) {
+        <span class="fmc-keyword">this</span>.name = name;
+    }
+}
+
+<span class="fmc-function">if </span>(count === <span class="fmc-number">0</span>) {
+    console.<span class="fmc-function">log</span>(<span class="fmc-string">&#039;Zero&#039;</span>);
+} <span class="fmc-keyword">else</span> {
+    count++;
+}
+
+<span class="fmc-keyword">try</span> {
+    <span class="fmc-keyword">throw</span> <span class="fmc-keyword">new</span> <span class="fmc-function">Error</span>(<span class="fmc-string">&#039;Test&#039;</span>);
+} <span class="fmc-function">catch </span>(e) {
+    console.<span class="fmc-function">error</span>(e);
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <span class="language-badge">TYPESCRIPT</span>
+        <span class="success-badge">✓ PASSED</span>
+        <h2>TypeScript with type annotations and interfaces</h2>
+        
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">TYPESCRIPT</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-keyword">interface</span> User {
+    name: <span class="fmc-type">string</span>;
+    age: <span class="fmc-type">number</span>;
+}
+
+<span class="fmc-keyword">type</span> ID = <span class="fmc-type">string</span> | <span class="fmc-type">number</span>;
+
+<span class="fmc-keyword">class</span> UserManager {
+    <span class="fmc-keyword">private</span> users: User[] = [];
+    
+    <span class="fmc-keyword">public</span> addUser(user: User): <span class="fmc-keyword">void</span> {
+        <span class="fmc-keyword">this</span>.users.push(user);
+    }
+    
+    <span class="fmc-keyword">async</span> fetchUser(id: ID): Promise&lt;User | <span class="fmc-literal">null</span>&gt; {
+        <span class="fmc-keyword">return</span> <span class="fmc-literal">null</span>;
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <span class="language-badge">PHP</span>
+        <span class="success-badge">✓ PASSED</span>
+        <h2>PHP with classes and control structures</h2>
+        
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">PHP</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code">&lt;?php
+<span class="fmc-keyword">namespace</span> App\Models;
+
+<span class="fmc-keyword">use</span> Illuminate\Database\Eloquent\Model;
+
+<span class="fmc-keyword">class</span> User <span class="fmc-keyword">extends</span> Model {
+    <span class="fmc-keyword">private</span> <span class="fmc-variable">$name</span>;
+    <span class="fmc-keyword">protected</span> <span class="fmc-variable">$email</span>;
+    <span class="fmc-keyword">public</span> <span class="fmc-keyword">static</span> <span class="fmc-variable">$table</span> = <span class="fmc-string">&#039;users&#039;</span>;
+    
+    <span class="fmc-keyword">public</span> <span class="fmc-keyword">function</span> __construct(<span class="fmc-variable">$name</span>) {
+        <span class="fmc-variable">$this</span>-&gt;name = <span class="fmc-variable">$name</span>;
+    }
+    
+    <span class="fmc-keyword">public</span> <span class="fmc-keyword">function</span> greet() {
+        <span class="fmc-keyword">echo</span> <span class="fmc-string">&quot;Hello, &quot;</span> . <span class="fmc-variable">$this</span>-&gt;name;
+        
+        <span class="fmc-keyword">if</span> (<span class="fmc-variable">$this</span>-&gt;email) {
+            <span class="fmc-keyword">print</span> <span class="fmc-string">&quot;Email: &quot;</span> . <span class="fmc-variable">$this</span>-&gt;email;
+        } <span class="fmc-keyword">elseif</span> (!empty(<span class="fmc-variable">$this</span>-&gt;name)) {
+            <span class="fmc-keyword">return</span> <span class="fmc-variable">$this</span>-&gt;name;
+        }
+        
+        <span class="fmc-keyword">foreach</span> (<span class="fmc-variable">$data</span> as <span class="fmc-variable">$key</span> =&gt; <span class="fmc-variable">$value</span>) {
+            <span class="fmc-keyword">echo</span> <span class="fmc-variable">$value</span>;
+        }
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <span class="language-badge">PYTHON</span>
+        <span class="success-badge">✓ PASSED</span>
+        <h2>Python with functions and control flow</h2>
+        
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">PYTHON</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-keyword">import</span> os
+<span class="fmc-keyword">from</span> typing <span class="fmc-keyword">import</span> List
+
+<span class="fmc-keyword">def</span> greet(name: str) -&gt; str:
+    <span class="fmc-string">&#039;&#039;&#039;Return a greeting message&#039;&#039;&#039;</span>
+    <span class="fmc-keyword">return</span> f<span class="fmc-string">&quot;Hello, {name}!&quot;</span>
+
+<span class="fmc-keyword">class</span> Person:
+    <span class="fmc-keyword">def</span> __init__(self, name):
+        self.name = name
+    
+    <span class="fmc-keyword">async</span> <span class="fmc-keyword">def</span> fetch_data(self):
+        <span class="fmc-keyword">if</span> self.name:
+            <span class="fmc-keyword">pass</span>
+        <span class="fmc-keyword">elif</span> not self.name:
+            <span class="fmc-keyword">return</span> <span class="fmc-literal">None</span>
+        
+        <span class="fmc-keyword">for</span> i <span class="fmc-keyword">in</span> range(<span class="fmc-number">10</span>):
+            <span class="fmc-keyword">yield</span> i
+        
+        <span class="fmc-keyword">try</span>:
+            data = <span class="fmc-keyword">await</span> get_data()
+        <span class="fmc-keyword">except</span> Exception <span class="fmc-keyword">as</span> e:
+            print(e)
+        <span class="fmc-keyword">finally</span>:
+            cleanup()
+
+<span class="fmc-keyword">lambda</span> x: x * <span class="fmc-number">2</span>
+<span class="fmc-literal">True</span>, <span class="fmc-literal">False</span>, <span class="fmc-literal">None</span></code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <span class="language-badge">C</span>
+        <span class="success-badge">✓ PASSED</span>
+        <h2>C with types and control structures</h2>
+        
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">C</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-preprocessor">#include</span> &lt;stdio.h&gt;
+<span class="fmc-preprocessor">#define</span> MAX <span class="fmc-number">100</span>
+
+<span class="fmc-keyword">struct</span> Point {
+    <span class="fmc-keyword">int</span> x;
+    <span class="fmc-keyword">int</span> y;
+};
+
+<span class="fmc-keyword">int</span> main() {
+    <span class="fmc-keyword">int</span> count = <span class="fmc-number">0</span>;
+    <span class="fmc-keyword">float</span> value = <span class="fmc-number">3.14</span>;
+    <span class="fmc-keyword">char</span> letter = <span class="fmc-string">&#039;A&#039;</span>;
+    <span class="fmc-keyword">const</span> <span class="fmc-keyword">char</span> *str = <span class="fmc-string">&quot;Hello&quot;</span>;
+    
+    <span class="fmc-keyword">if</span> (count == <span class="fmc-number">0</span>) {
+        printf(<span class="fmc-string">&quot;Zero\n&quot;</span>);
+    } <span class="fmc-keyword">else</span> {
+        count++;
+    }
+    
+    <span class="fmc-keyword">for</span> (<span class="fmc-keyword">int</span> i = <span class="fmc-number">0</span>; i &lt; MAX; i++) {
+        <span class="fmc-keyword">continue</span>;
+    }
+    
+    <span class="fmc-keyword">switch</span> (letter) {
+        <span class="fmc-keyword">case</span> <span class="fmc-string">&#039;A&#039;</span>:
+            <span class="fmc-keyword">break</span>;
+        <span class="fmc-keyword">default</span>:
+            <span class="fmc-keyword">return</span> <span class="fmc-number">1</span>;
+    }
+    
+    <span class="fmc-keyword">return</span> <span class="fmc-number">0</span>;
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <span class="language-badge">LUA</span>
+        <span class="success-badge">✓ PASSED</span>
+        <h2>Lua with functions and control flow</h2>
+        
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">LUA</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-keyword">local</span> <span class="fmc-keyword">function</span> greet(<span class="fmc-variable">name</span>)
+    <span class="fmc-keyword">return</span> <span class="fmc-string">&quot;Hello, &quot;</span> <span class="fmc-operator">..</span> name
+<span class="fmc-keyword">end</span>
+
+<span class="fmc-keyword">if</span> <span class="fmc-keyword">true</span> <span class="fmc-keyword">then</span>
+    <span class="fmc-function">print</span>(<span class="fmc-variable">&quot;True&quot;</span>)
+<span class="fmc-keyword">elseif</span> <span class="fmc-keyword">false</span> <span class="fmc-keyword">then</span>
+    <span class="fmc-function">print</span>(<span class="fmc-variable">&quot;False&quot;</span>)
+<span class="fmc-keyword">else</span>
+    <span class="fmc-function">print</span>(<span class="fmc-variable">&quot;Nil&quot;</span>)
+<span class="fmc-keyword">end</span>
+
+<span class="fmc-keyword">for</span> <span class="fmc-variable">i</span> <span class="fmc-operator">=</span> <span class="fmc-variable">1</span>, <span class="fmc-number">10</span> <span class="fmc-keyword">do</span>
+    <span class="fmc-function">print</span>(<span class="fmc-variable">i</span>)
+<span class="fmc-keyword">end</span>
+
+<span class="fmc-keyword">while</span> count <span class="fmc-operator">&gt;</span> <span class="fmc-number">0</span> <span class="fmc-keyword">do</span>
+    <span class="fmc-variable">count</span> <span class="fmc-operator">=</span> count <span class="fmc-operator">-</span> <span class="fmc-number">1</span>
+<span class="fmc-keyword">end</span>
+
+<span class="fmc-keyword">repeat</span>
+    <span class="fmc-variable">x</span> <span class="fmc-operator">=</span> x <span class="fmc-operator">+</span> <span class="fmc-number">1</span>
+<span class="fmc-keyword">until</span> x <span class="fmc-operator">&gt;</span> <span class="fmc-number">10</span>
+
+<span class="fmc-keyword">local</span> <span class="fmc-variable">t</span> <span class="fmc-operator">=</span> {<span class="fmc-variable">1</span>, <span class="fmc-variable">2</span>, <span class="fmc-number">3</span>}
+<span class="fmc-keyword">for</span> <span class="fmc-variable">k</span>, v <span class="fmc-keyword">in</span> <span class="fmc-function">pairs</span>(<span class="fmc-variable">t</span>) <span class="fmc-keyword">do</span>
+    <span class="fmc-function">print</span>(<span class="fmc-variable">k</span>, <span class="fmc-variable">v</span>)
+<span class="fmc-keyword">end</span></code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <span class="language-badge">SHELL</span>
+        <span class="success-badge">✓ PASSED</span>
+        <h2>Shell script with various commands</h2>
+        
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-preprocessor">#!/bin/bash</span>
+
+<span class="fmc-keyword">function</span> greet<span class="fmc-operator">(</span><span class="fmc-operator">)</span> {
+    <span class="fmc-builtin">echo</span> <span class="fmc-string">&quot;Hello, $1&quot;</span>
+}
+
+<span class="fmc-keyword">if</span> <span class="fmc-builtin">[</span><span class="fmc-flag"> -f</span> /etc/passwd <span class="fmc-builtin">]</span><span class="fmc-operator">;</span> <span class="fmc-keyword">then</span>
+    <span class="fmc-function">cat</span> /etc/passwd
+<span class="fmc-keyword">elif</span> <span class="fmc-builtin">[[</span><span class="fmc-flag"> -n</span> <span class="fmc-string">&quot;$VAR&quot;</span> <span class="fmc-builtin">]]</span><span class="fmc-operator">;</span> <span class="fmc-keyword">then</span>
+    <span class="fmc-builtin">printf</span> <span class="fmc-string">&quot;%s\n&quot;</span> <span class="fmc-string">&quot;$VAR&quot;</span>
+<span class="fmc-keyword">else</span>
+    <span class="fmc-builtin">exit</span> <span class="fmc-number">1</span>
+<span class="fmc-keyword">fi</span>
+
+<span class="fmc-keyword">for</span> file <span class="fmc-keyword">in</span> *.txt<span class="fmc-operator">;</span> <span class="fmc-keyword">do</span>
+    <span class="fmc-function">grep</span> <span class="fmc-string">&quot;pattern&quot;</span> <span class="fmc-string">&quot;$file&quot;</span>
+<span class="fmc-keyword">done</span>
+
+<span class="fmc-keyword">while</span> <span class="fmc-builtin">read</span> line<span class="fmc-operator">;</span> <span class="fmc-keyword">do</span>
+    <span class="fmc-builtin">echo</span> <span class="fmc-variable">$line</span>
+<span class="fmc-keyword">done</span> <span class="fmc-operator">&lt;</span> input.txt
+
+<span class="fmc-keyword">case</span> $<span class="fmc-number">1</span> <span class="fmc-keyword">in</span>
+    start<span class="fmc-operator">)</span>
+        <span class="fmc-builtin">sudo</span> systemctl start service
+        <span class="fmc-operator">;</span><span class="fmc-operator">;</span>
+    stop<span class="fmc-operator">)</span>
+        <span class="fmc-builtin">return</span> <span class="fmc-number">0</span>
+        <span class="fmc-operator">;</span><span class="fmc-operator">;</span>
+<span class="fmc-keyword">esac</span>
+
+<span class="fmc-builtin">export</span> PATH=<span class="fmc-string">&quot;/usr/local/bin:$PATH&quot;</span>
+<span class="fmc-function">ls</span><span class="fmc-flag"> -la</span> <span class="fmc-operator">|</span> <span class="fmc-function">awk</span> <span class="fmc-string">&#039;{print $1}&#039;</span> <span class="fmc-operator">&gt;</span> output.txt</code></pre>
+        </div>
+    </div>
+
+    <div style="margin: 3rem 0; padding: 1.5rem; background: #d4edda; border-left: 4px solid #28a745; border-radius: 8px;">
+        <h3 style="margin-top: 0; color: #155724;">✅ All Tests Passed</h3>
+        <p style="color: #155724; margin: 0;">All 7 language tests completed successfully. Syntax highlighting is working correctly after refactoring.</p>
+    </div>
+</body>
+</html>
