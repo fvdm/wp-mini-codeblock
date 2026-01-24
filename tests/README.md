@@ -57,10 +57,23 @@ When viewing `examples/comprehensive-test.html`, verify that:
 
 The `highlight-samples.php` script generates a static HTML file with test cases to verify that shell syntax highlighting works correctly, particularly for:
 
+- **Command coloring rule**: First command word is orange, second command word (after command wrappers like `sudo`) is blue
 - Opening `(` and closing `)` parentheses (should both be highlighted as operators)
 - Subshell constructs like `$(...)` and backticks
 - Square bracket test operators `[ ]` and `[[ ]]`
 - String literals with embedded parentheses
+
+### Command Coloring Rule
+
+The shell highlighter applies a specific coloring rule for command words:
+
+- **First command word** (at line start or after operators like `;`, `&&`, `||`, `|`) → **Orange** (`#ffca80`)
+- **Second command word** (after command wrappers: `sudo`, `env`, `time`, `nice`, `nohup`, `watch`, `xargs`) → **Blue** (`#82aaff`)
+
+Examples:
+- `sudo mkdir` → `sudo` is orange, `mkdir` is blue
+- `mkdir` → `mkdir` is orange (no second command)
+- `ls -la | grep test` → `ls` is orange, `grep` is orange (each is a first command in its segment)
 
 ### Usage
 
@@ -82,6 +95,9 @@ The `highlight-samples.php` script generates a static HTML file with test cases 
 
 When viewing `examples/shell-test.html`, verify that:
 
+- ✓ In `sudo mkdir`: `sudo` is orange, `mkdir` is blue
+- ✓ In `mkdir`: `mkdir` is orange
+- ✓ In `ls -la | grep test`: both `ls` and `grep` are orange
 - ✓ Both `(` and `)` have the same pink/operator color (#ff6b9d)
 - ✓ The `$(` in `echo $(ls)` is highlighted as an operator
 - ✓ Parentheses inside strings (like `'("en-US")'`) are green (string color #a5d6a7)
@@ -90,23 +106,35 @@ When viewing `examples/shell-test.html`, verify that:
 
 ### Test Cases Included
 
-1. **User-provided sample:** `defaults write com.Ubisoft.AssassinsCreedBrotherhood AppleLanguages '("en-US")'`
+1. **Command with sudo prefix:** `sudo mkdir`
+   - Tests first command (orange) and second command (blue) coloring
+   
+2. **Single command:** `mkdir`
+   - Tests first command (orange) coloring
+   
+3. **User-provided sample:** `defaults write com.Ubisoft.AssassinsCreedBrotherhood AppleLanguages '("en-US")'`
    - Tests parentheses in single-quoted strings
    
-2. **Subshell:** `echo $(ls)`
+4. **Subshell:** `echo $(ls)`
    - Tests `$(...)` subshell syntax
    
-3. **Not a subshell:** `var='(not-subshell)'`
+5. **Not a subshell:** `var='(not-subshell)'`
    - Tests that parentheses in strings are colored as strings, not operators
    
-4. **Backticks:** `` echo `date` ``
+6. **Backticks:** `` echo `date` ``
    - Tests backtick command substitution
    
-5. **Single bracket test:** `if [ -f /etc/passwd ]; then echo yes; fi`
+7. **Single bracket test:** `if [ -f /etc/passwd ]; then echo yes; fi`
    - Tests `[ ]` test operator
    
-6. **Double bracket test:** `if [[ -n "$var" ]]; then`
+8. **Double bracket test:** `if [[ -n "$var" ]]; then`
    - Tests `[[ ]]` extended test operator
+   
+9. **Piped commands:** `ls -la | grep test`
+   - Tests that each command in a pipeline gets first command coloring
+   
+10. **Multiple commands with sudo:** `sudo apt-get install package`
+    - Tests sudo (orange) with apt-get (blue) and arguments (no color)
 
 ## Running All Tests
 

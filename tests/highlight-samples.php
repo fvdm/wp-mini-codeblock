@@ -59,6 +59,16 @@ require_once __DIR__ . '/../franklin-mini-codeblock.php';
 // Test samples
 $samples = [
     [
+        'description' => 'Command with sudo prefix (first=orange, second=blue)',
+        'code' => 'sudo mkdir',
+        'language' => 'shell'
+    ],
+    [
+        'description' => 'Single command (first=orange)',
+        'code' => 'mkdir',
+        'language' => 'shell'
+    ],
+    [
         'description' => 'User-provided sample with parentheses in single-quoted string',
         'code' => "defaults write com.Ubisoft.AssassinsCreedBrotherhood AppleLanguages '(\"en-US\")'",
         'language' => 'shell'
@@ -86,6 +96,16 @@ $samples = [
     [
         'description' => 'Double bracket test operator',
         'code' => 'if [[ -n "$var" ]]; then',
+        'language' => 'shell'
+    ],
+    [
+        'description' => 'Piped commands (each first command=orange)',
+        'code' => 'ls -la | grep test',
+        'language' => 'shell'
+    ],
+    [
+        'description' => 'Multiple commands with sudo',
+        'code' => 'sudo apt-get install package',
         'language' => 'shell'
     ]
 ];
@@ -196,13 +216,17 @@ $html = '<!DOCTYPE html>
     <h1>Franklin Mini Codeblock - Shell Syntax Highlighting Test</h1>
     
     <div class="legend">
-        <h3>Expected Highlighting Colors</h3>
-        <p>This test verifies that both opening <code>(</code> and closing <code>)</code> parentheses are highlighted with the same operator color.</p>
+        <h3>Expected Highlighting Colors - Command Coloring Rule</h3>
+        <p>This test verifies the new shell command highlighting rule:</p>
+        <ul>
+            <li><strong>First command word</strong> (e.g., <code>sudo</code>, <code>mkdir</code>, <code>ls</code>) → <strong>Orange</strong></li>
+            <li><strong>Second command word</strong> after command wrappers (e.g., <code>mkdir</code> in <code>sudo mkdir</code>) → <strong>Blue</strong></li>
+        </ul>
         <div>
-            <span class="color-sample"><span class="color-box" style="background: #ff6b9d;"></span> <strong>Operator:</strong> ( ) $( `</span>
+            <span class="color-sample"><span class="color-box" style="background: #ffca80;"></span> <strong>First Command:</strong> sudo, mkdir, ls, grep</span>
+            <span class="color-sample"><span class="color-box" style="background: #82aaff;"></span> <strong>Second Command:</strong> mkdir (after sudo), apt-get (after sudo)</span>
+            <span class="color-sample"><span class="color-box" style="background: #ff6b9d;"></span> <strong>Operator:</strong> ( ) $( ` | ; &&</span>
             <span class="color-sample"><span class="color-box" style="background: #a5d6a7;"></span> <strong>String:</strong> \'...\' "..."</span>
-            <span class="color-sample"><span class="color-box" style="background: #ff9e64;"></span> <strong>Builtin:</strong> echo, test, [ ]</span>
-            <span class="color-sample"><span class="color-box" style="background: #82aaff;"></span> <strong>Variable:</strong> $var</span>
         </div>
     </div>
 ';
@@ -231,8 +255,11 @@ foreach ( $samples as $sample ) {
 
 $html .= '
     <div style="margin: 3rem 0; padding: 1rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <h3>Visual Inspection Checklist</h3>
+        <h3>Visual Inspection Checklist - Command Coloring</h3>
         <ul>
+            <li>✓ In <code>sudo mkdir</code>: <code>sudo</code> should be orange, <code>mkdir</code> should be blue</li>
+            <li>✓ In <code>mkdir</code>: <code>mkdir</code> should be orange</li>
+            <li>✓ In <code>ls -la | grep test</code>: both <code>ls</code> and <code>grep</code> should be orange</li>
             <li>✓ Both <code>(</code> and <code>)</code> should have the same pink/operator color</li>
             <li>✓ The <code>$(</code> in <code>echo $(ls)</code> should be highlighted as an operator</li>
             <li>✓ Parentheses inside strings should be green (string color)</li>
