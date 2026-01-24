@@ -471,36 +471,36 @@
             <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-preprocessor">#!/bin/bash</span>
 
 <span class="fmc-keyword">function</span> greet<span class="fmc-operator">(</span><span class="fmc-operator">)</span> {
-    <span class="fmc-builtin">echo</span> <span class="fmc-string">&quot;Hello, $1&quot;</span>
+    echo <span class="fmc-string">&quot;Hello, $1&quot;</span>
 }
 
 <span class="fmc-keyword">if</span> <span class="fmc-builtin">[</span><span class="fmc-flag"> -f</span> /etc/passwd <span class="fmc-builtin">]</span><span class="fmc-operator">;</span> <span class="fmc-keyword">then</span>
-    <span class="fmc-function">cat</span> /etc/passwd
+    cat /etc/passwd
 <span class="fmc-keyword">elif</span> <span class="fmc-builtin">[[</span><span class="fmc-flag"> -n</span> <span class="fmc-string">&quot;$VAR&quot;</span> <span class="fmc-builtin">]]</span><span class="fmc-operator">;</span> <span class="fmc-keyword">then</span>
-    <span class="fmc-builtin">printf</span> <span class="fmc-string">&quot;%s\n&quot;</span> <span class="fmc-string">&quot;$VAR&quot;</span>
+    printf <span class="fmc-string">&quot;%s\n&quot;</span> <span class="fmc-string">&quot;$VAR&quot;</span>
 <span class="fmc-keyword">else</span>
-    <span class="fmc-builtin">exit</span> <span class="fmc-number">1</span>
+    exit <span class="fmc-number">1</span>
 <span class="fmc-keyword">fi</span>
 
 <span class="fmc-keyword">for</span> file <span class="fmc-keyword">in</span> *.txt<span class="fmc-operator">;</span> <span class="fmc-keyword">do</span>
-    <span class="fmc-function">grep</span> <span class="fmc-string">&quot;pattern&quot;</span> <span class="fmc-string">&quot;$file&quot;</span>
+    grep <span class="fmc-string">&quot;pattern&quot;</span> <span class="fmc-string">&quot;$file&quot;</span>
 <span class="fmc-keyword">done</span>
 
-<span class="fmc-keyword">while</span> <span class="fmc-builtin">read</span> line<span class="fmc-operator">;</span> <span class="fmc-keyword">do</span>
-    <span class="fmc-builtin">echo</span> <span class="fmc-variable">$line</span>
+<span class="fmc-keyword">while</span> read line<span class="fmc-operator">;</span> <span class="fmc-keyword">do</span>
+    echo <span class="fmc-variable">$line</span>
 <span class="fmc-keyword">done</span> <span class="fmc-operator">&lt;</span> input.txt
 
 <span class="fmc-keyword">case</span> $<span class="fmc-number">1</span> <span class="fmc-keyword">in</span>
     start<span class="fmc-operator">)</span>
-        <span class="fmc-builtin">sudo</span> systemctl start service
+        sudo systemctl start service
         <span class="fmc-operator">;</span><span class="fmc-operator">;</span>
     stop<span class="fmc-operator">)</span>
-        <span class="fmc-builtin">return</span> <span class="fmc-number">0</span>
+        return <span class="fmc-number">0</span>
         <span class="fmc-operator">;</span><span class="fmc-operator">;</span>
 <span class="fmc-keyword">esac</span>
 
-<span class="fmc-builtin">export</span> PATH=<span class="fmc-string">&quot;/usr/local/bin:$PATH&quot;</span>
-<span class="fmc-function">ls</span><span class="fmc-flag"> -la</span> <span class="fmc-operator">|</span> <span class="fmc-function">awk</span> <span class="fmc-string">&#039;{print $1}&#039;</span> <span class="fmc-operator">&gt;</span> output.txt</code></pre>
+export PATH=<span class="fmc-string">&quot;/usr/local/bin:$PATH&quot;</span>
+ls<span class="fmc-flag"> -la</span> <span class="fmc-operator">|</span> <span class="fmc-number">awk</span> <span class="fmc-string">&#039;{print $1}&#039;</span> <span class="fmc-operator">&gt;</span> output.txt</code></pre>
         </div>
     </div>
 
