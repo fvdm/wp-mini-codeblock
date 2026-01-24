@@ -14,6 +14,7 @@
         { label: 'JavaScript', value: 'javascript' },
         { label: 'JSON', value: 'json' },
         { label: 'Lua', value: 'lua' },
+        { label: 'Path', value: 'path' },
         { label: 'PHP', value: 'php' },
         { label: 'Python', value: 'python' },
         { label: 'Shell', value: 'shell' },
