@@ -14,14 +14,59 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class Franklin_Mini_Codeblock {
     private $version = '1.5.5';
     private $language_patterns;
+    
+    // Reusable regex patterns
+    private $common_patterns = [];
 
     public function __construct() {
         add_action( 'init', [ $this, 'register_block' ] );
         add_action( 'wp_enqueue_scripts', [ $this, 'frontend_assets' ] );
         register_deactivation_hook( __FILE__, [ $this, 'deactivate' ] );
         
+        // Initialize common patterns once
+        $this->init_common_patterns();
+        
         // Initialize language patterns once to avoid recreating on every render
         $this->language_patterns = $this->init_language_patterns();
+    }
+    
+    private function init_common_patterns() {
+        // Single-line comment pattern (for //, #, etc.)
+        $this->common_patterns['comment_line_slashes'] = '/(\/\/.*$)/m';
+        $this->common_patterns['comment_line_hash'] = '/(#.*$)/m';
+        
+        // Multi-line comment pattern (/* ... */)
+        $this->common_patterns['comment_block'] = '/(\/\*[\s\S]*?\*\/)/s';
+        
+        // String patterns - reusable across languages
+        // Matches single-quoted strings: 'text' with escape sequences
+        $this->common_patterns['string_single'] = "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'";
+        
+        // Matches double-quoted strings: "text" with escape sequences
+        $this->common_patterns['string_double'] = '"(?:\\\\.|[^"\\\\])*"';
+        
+        // Matches backtick strings: `text` (for template literals)
+        $this->common_patterns['string_backtick'] = '`(?:\\\\.|[^`\\\\])*`';
+        
+        // Combined string pattern (single or double quotes)
+        $this->common_patterns['strings_single_double'] = '/(' 
+            . $this->common_patterns['string_single'] . '|' 
+            . $this->common_patterns['string_double'] 
+            . ')/s';
+        
+        // Combined string pattern (all three: single, double, backtick)
+        $this->common_patterns['strings_all'] = '/(' 
+            . $this->common_patterns['string_single'] . '|' 
+            . $this->common_patterns['string_double'] . '|'
+            . $this->common_patterns['string_backtick']
+            . ')/s';
+        
+        // Number patterns
+        // Basic integers and floats
+        $this->common_patterns['number_basic'] = '\b(\d+\.?\d*|\.\d+)\b';
+        
+        // Numbers with hex support
+        $this->common_patterns['number_with_hex'] = '\b(\d+\.?\d*|\.\d+|0x[0-9a-fA-F]+)\b';
     }
     
     public function deactivate() {
@@ -37,20 +82,38 @@ class Franklin_Mini_Codeblock {
     }
 
     private function init_language_patterns() {
+        // Ensure common patterns are initialized
+        // (Handles edge case where init_language_patterns is called via reflection)
+        if ( empty( $this->common_patterns ) ) {
+            $this->init_common_patterns();
+        }
+        
+        // C language keywords
+        $c_keywords = [
+            // Types
+            'int', 'char', 'float', 'double', 'void', 'long', 'short', 
+            'signed', 'unsigned', 'struct', 'union', 'enum', 'typedef', 'sizeof',
+            // Control flow
+            'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'default',
+            'break', 'continue', 'return', 'goto',
+            // Storage classes
+            'const', 'static', 'extern', 'auto', 'register', 'volatile', 'inline', 'restrict'
+        ];
+        
         return [
             'c' => [
-                ['r' => '/(\/\/.*$)/m', 'c' => 'comment'],
-                ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
-                ['r' => '/\b(int|char|float|double|void|long|short|signed|unsigned|struct|union|enum|typedef|sizeof|if|else|for|while|do|switch|case|default|break|continue|return|goto|const|static|extern|auto|register|volatile|inline|restrict)\b/', 'c' => 'keyword'],
+                ['r' => $this->common_patterns['comment_line_slashes'], 'c' => 'comment'],
+                ['r' => $this->common_patterns['comment_block'], 'c' => 'comment'],
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
+                ['r' => '/\b(' . implode('|', $c_keywords) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/#\s*(include|define|ifdef|ifndef|endif|pragma)/', 'c' => 'preprocessor'],
-                ['r' => '/\b(\d+\.?\d*|\.\d+|0x[0-9a-fA-F]+)\b/', 'c' => 'number']
+                ['r' => '/' . $this->common_patterns['number_with_hex'] . '/', 'c' => 'number']
             ],
             'css' => [
-                ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
+                ['r' => $this->common_patterns['comment_block'], 'c' => 'comment'],
                 ['r' => '/([.#][a-zA-Z][a-zA-Z0-9_-]*)/', 'c' => 'selector'],
                 ['r' => '/([a-zA-Z-]+)\s*:/', 'c' => 'property'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
                 ['r' => '/#[0-9a-fA-F]{3,8}\b/', 'c' => 'number'],
                 ['r' => '/\b(\d+(?:px|em|rem|%|vh|vw|pt)?)/', 'c' => 'number']
             ],
@@ -58,22 +121,29 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(<!--[\s\S]*?-->)/s', 'c' => 'comment'],
                 ['r' => '/(<\/?[a-zA-Z][a-zA-Z0-9]*)/', 'c' => 'tag'],
                 ['r' => '/([a-zA-Z-]+)=/', 'c' => 'attr'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'] // Fixed: Added ^ to properly negate character class for single quotes
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string']
             ],
             'ini' => [
                 ['r' => '/(;.*$|#.*$)/m', 'c' => 'comment'],
                 ['r' => '/(\[[^\]]+\])/', 'c' => 'section'],
                 ['r' => '/^([a-zA-Z_][a-zA-Z0-9_.]*)(?=\s*=)/m', 'c' => 'property'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'] // Fixed: Added ^ to properly negate character class for single quotes
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string']
             ],
             'javascript' => [
                 ['r' => '/([^:]\/\/.*$)/m', 'c' => 'comment'],
-                ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*"|`(?:\\\\.|[^`\\\\])*`)/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
+                ['r' => $this->common_patterns['comment_block'], 'c' => 'comment'],
+                ['r' => $this->common_patterns['strings_all'], 'c' => 'string'],
                 ['r' => '/(?<![\'"])\b([a-zA-Z0-9_]+)\s*:/', 'c' => 'property'],
-                ['r' => '/\b(const|let|var|function|return|if|else|for|while|class|import|export|from|async|await|new|this|super|extends|static|try|catch|throw|typeof|instanceof|delete|void|yield|break|continue|switch|case|default|do)\b/', 'c' => 'keyword'],
+                // JavaScript keywords (modularized)
+                ['r' => '/\b(' . implode('|', [
+                    'const', 'let', 'var', 'function', 'return', 'if', 'else', 
+                    'for', 'while', 'class', 'import', 'export', 'from', 'async', 
+                    'await', 'new', 'this', 'super', 'extends', 'static', 'try', 
+                    'catch', 'throw', 'typeof', 'instanceof', 'delete', 'void', 
+                    'yield', 'break', 'continue', 'switch', 'case', 'default', 'do'
+                ]) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/\b(true|false|null|undefined|NaN|Infinity)\b/', 'c' => 'literal'],
-                ['r' => '/\b(\d+\.?\d*|\.\d+)\b/', 'c' => 'number'],
+                ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number'],
                 ['r' => '/([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/', 'c' => 'function']
             ],
             'json' => [
@@ -85,68 +155,135 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(--.*$)/m', 'c' => 'comment'],
                 ['r' => '/(--\[\[[\s\S]*?\]\])/s', 'c' => 'comment'],
                 ['r' => '/("([^"\\\\]|\\\\.)*"|' . "'" . '([^' . "'" . '\\\\]|\\\\.)*' . "'" . '|\[\[[\s\S]*?\]\])/s', 'c' => 'string'],
-                ['r' => '/\b(and|break|do|else|elseif|end|false|for|function|goto|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/', 'c' => 'keyword'],
-                ['r' => '/\b(print|pairs|ipairs|next|type|tostring|tonumber|error|assert|pcall|xpcall|require|dofile|load|loadfile|set)\b/', 'c' => 'function'],
+                // Lua keywords
+                ['r' => '/\b(' . implode('|', [
+                    'and', 'break', 'do', 'else', 'elseif', 'end', 'false', 
+                    'for', 'function', 'goto', 'if', 'in', 'local', 'nil', 
+                    'not', 'or', 'repeat', 'return', 'then', 'true', 'until', 'while'
+                ]) . ')\b/', 'c' => 'keyword'],
+                // Lua built-in functions
+                ['r' => '/\b(' . implode('|', [
+                    'print', 'pairs', 'ipairs', 'next', 'type', 'tostring', 
+                    'tonumber', 'error', 'assert', 'pcall', 'xpcall', 
+                    'require', 'dofile', 'load', 'loadfile', 'set'
+                ]) . ')\b/', 'c' => 'function'],
                 ['r' => '/\b(string|table|math|os|io|coroutine|debug|package)\b/', 'c' => 'type'],
-                ['r' => '/\b(\d+\.?\d*|\.\d+|0x[0-9a-fA-F]+)\b/', 'c' => 'number'],
+                ['r' => '/' . $this->common_patterns['number_with_hex'] . '/', 'c' => 'number'],
                 ['r' => '/\b([a-zA-Z_][a-zA-Z0-9_]*)\b(?=\s*[,)=])/', 'c' => 'variable'],
                 ['r' => '/(\.\.\.|\.{2}|[+\-*\/%^#=<>~]+)/', 'c' => 'operator']
             ],
             'php' => [
                 ['r' => '/(#.*$|\/\/.*$)/m', 'c' => 'comment'],
-                ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
-                ['r' => '/\b(class|function|public|private|protected|static|const|return|if|else|foreach|while|new|namespace|use|trait|interface|extends|implements|echo|print|require|include)\b/', 'c' => 'keyword'],
+                ['r' => $this->common_patterns['comment_block'], 'c' => 'comment'],
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
+                // PHP keywords
+                ['r' => '/\b(' . implode('|', [
+                    'class', 'function', 'public', 'private', 'protected', 'static', 
+                    'const', 'return', 'if', 'else', 'foreach', 'while', 'new', 
+                    'namespace', 'use', 'trait', 'interface', 'extends', 'implements', 
+                    'echo', 'print', 'require', 'include'
+                ]) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*)/', 'c' => 'variable'],
-                ['r' => '/\b(\d+\.?\d*|\.\d+)\b/', 'c' => 'number']
+                ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number']
             ],
             'python' => [
-                ['r' => '/(#.*$)/m', 'c' => 'comment'],
+                ['r' => $this->common_patterns['comment_line_hash'], 'c' => 'comment'],
                 ['r' => "/('''[\\s\\S]*?'''|\"\"\"[\\s\\S]*?\"\"\")/s", 'c' => 'string'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
-                ['r' => '/\b(def|class|import|from|return|if|elif|else|for|while|in|try|except|finally|with|as|lambda|yield|async|await|pass|break|continue|global|nonlocal)\b/', 'c' => 'keyword'],
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
+                // Python keywords
+                ['r' => '/\b(' . implode('|', [
+                    'def', 'class', 'import', 'from', 'return', 'if', 'elif', 
+                    'else', 'for', 'while', 'in', 'try', 'except', 'finally', 
+                    'with', 'as', 'lambda', 'yield', 'async', 'await', 'pass', 
+                    'break', 'continue', 'global', 'nonlocal'
+                ]) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/\b(True|False|None)\b/', 'c' => 'literal'],
-                ['r' => '/\b(\d+\.?\d*|\.\d+)\b/', 'c' => 'number']
+                ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number']
             ],
             'shell' => [
                 ['r' => '/^(#!.*)$/m', 'c' => 'preprocessor'],
-                ['r' => '/(#.*$)/m', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
-                ['r' => '/\b(if|then|else|elif|fi|for|while|until|do|done|case|esac|select|function|in)\b/', 'c' => 'keyword'],
-                ['r' => '/\b(echo|printf|read|cd|rm|exit|return|source|alias|unalias|export|unset|shift|getopts|test|sudo|chmod|chown)\b/', 'c' => 'builtin'],
+                ['r' => $this->common_patterns['comment_line_hash'], 'c' => 'comment'],
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
+                // Shell keywords
+                ['r' => '/\b(' . implode('|', [
+                    'if', 'then', 'else', 'elif', 'fi', 'for', 'while', 
+                    'until', 'do', 'done', 'case', 'esac', 'select', 
+                    'function', 'in'
+                ]) . ')\b/', 'c' => 'keyword'],
+                // Shell built-in commands
+                ['r' => '/\b(' . implode('|', array_map('preg_quote', [
+                    'echo', 'printf', 'read', 'cd', 'rm', 'exit', 'return', 
+                    'source', 'alias', 'unalias', 'export', 'unset', 'shift', 
+                    'getopts', 'test', 'sudo', 'chmod', 'chown'
+                ])) . ')\b/', 'c' => 'builtin'],
                 ['r' => '/([\[\]]{1,2})/', 'c' => 'builtin'],
-                ['r' => '/\b(ls|cat|grep|awk|sed|find|xargs|tail|head|screen|dtach|curl|wget|ssh|scp|tar|zip|unzip|make|defaults|docker|kubectl|tmutil|pbcopy|pbpaste|node|npm)\b/', 'c' => 'function'],
+                // Common Unix commands
+                ['r' => '/\b(' . implode('|', array_map('preg_quote', [
+                    'ls', 'cat', 'grep', 'awk', 'sed', 'find', 'xargs', 
+                    'tail', 'head', 'screen', 'dtach', 'curl', 'wget', 'ssh', 
+                    'scp', 'tar', 'zip', 'unzip', 'make', 'defaults', 'docker', 
+                    'kubectl', 'tmutil', 'pbcopy', 'pbpaste', 'node', 'npm'
+                ])) . ')\b/', 'c' => 'function'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*|\${[^}]+})/', 'c' => 'variable'],
                 ['r' => '/\s(--[a-zA-Z0-9\-]+|\-[a-zA-Z]+)/', 'c' => 'flag'],
                 ['r' => '/(\|\||&&|2>>|>>|&>|2>|;|\||>|<)/', 'c' => 'operator'],
-                ['r' => '/(\$\(|\(|\)|`)/', 'c' => 'operator'], // Fixed: Added \( to match opening parentheses
+                ['r' => '/(\$\(|\(|\)|`)/', 'c' => 'operator'],
                 ['r' => '/\b(\d+)\b/', 'c' => 'number']
             ],
             'text' => [],
             'typescript' => [
-                ['r' => '/(\/\/.*$)/m', 'c' => 'comment'],
-                ['r' => '/(\/\*[\s\S]*?\*\/)/s', 'c' => 'comment'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*"|`(?:\\\\.|[^`\\\\])*`)/s', 'c' => 'string'], // Fixed: Added ^ to properly negate character class for single quotes
-                ['r' => '/\b(const|let|var|function|return|if|else|for|while|class|import|export|from|async|await|new|this|super|extends|static|interface|type|enum|namespace|public|private|protected|readonly|implements|declare)\b/', 'c' => 'keyword'],
+                ['r' => $this->common_patterns['comment_line_slashes'], 'c' => 'comment'],
+                ['r' => $this->common_patterns['comment_block'], 'c' => 'comment'],
+                ['r' => $this->common_patterns['strings_all'], 'c' => 'string'],
+                // TypeScript keywords (extends JavaScript)
+                ['r' => '/\b(' . implode('|', [
+                    'const', 'let', 'var', 'function', 'return', 'if', 'else', 
+                    'for', 'while', 'class', 'import', 'export', 'from', 'async', 
+                    'await', 'new', 'this', 'super', 'extends', 'static', 
+                    'interface', 'type', 'enum', 'namespace', 'public', 'private', 
+                    'protected', 'readonly', 'implements', 'declare'
+                ]) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/\b(string|number|boolean|any|void|never|unknown)\b/', 'c' => 'type'],
                 ['r' => '/\b(true|false|null|undefined|NaN|Infinity)\b/', 'c' => 'literal'],
-                ['r' => '/\b(\d+\.?\d*|\.\d+)\b/', 'c' => 'number']
+                ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number']
             ],
             'url' => [
+                // Protocol (e.g., http:, https:, ftp:)
+                // Matches letter followed by alphanumeric/+/./- then colon, before //
                 ['r' => '/\b([a-zA-Z][a-zA-Z0-9+.-]*:)(?=\/\/)/', 'c' => 'url-protocol'],
+                
+                // Protocol separator (//)
                 ['r' => '/\/\//', 'c' => 'url-slash'],
+                
+                // Hostname or domain (e.g., example.com)
+                // Matches characters between // and next delimiter (/, :, ?, #, or end)
                 ['r' => '/(?<=\/\/)([^\s\/:?#]+)/', 'c' => 'url-host'],
+                
+                // Port number (e.g., :8080)
+                // Matches colon followed by 2-5 digits, before /, ?, #, space, or end
                 ['r' => '/(:\d{2,5})(?=\/|[?#]|\s|$)/', 'c' => 'url-port'],
+                
+                // Path segments (e.g., /api/users)
+                // Matches path components between slashes
                 ['r' => '/(?<=\/)([^\/\s?#]+)(?=(\/|\?|#|$))/', 'c' => 'url-path'],
+                
+                // Trailing slashes in paths
+                // Matches / after non-slash/colon before non-slash character or end
                 ['r' => '/(?<=[^\/:])\/(?=[^\s\/]|$)/', 'c' => 'url-slash'],
+                
+                // Query string (e.g., ?foo=bar&baz=qux)
+                // Matches ? followed by anything except # or space
                 ['r' => '/(\?[^#\s]*)/', 'c' => 'url-query'],
+                
+                // Fragment/hash (e.g., #section)
+                // Matches # followed by anything except space
                 ['r' => '/(#[^\s]*)/', 'c' => 'url-hash']
             ],
             'xml' => [
                 ['r' => '/(<!--[\s\S]*?-->)/s', 'c' => 'comment'],
                 ['r' => '/(<\/?[a-zA-Z][a-zA-Z0-9:]*)/', 'c' => 'tag'],
                 ['r' => '/([a-zA-Z:][a-zA-Z0-9:_-]*)=/', 'c' => 'attr'],
-                ['r' => '/(' . "'" . '(?:\\\\.|[^' . "'" . '\\\\])*' . "'" . '|"(?:\\\\.|[^"\\\\])*")/s', 'c' => 'string'] // Fixed: Added ^ to properly negate character class for single quotes
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string']
             ]
         ];
     }
