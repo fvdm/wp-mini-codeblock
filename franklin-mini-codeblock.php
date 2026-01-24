@@ -211,19 +211,19 @@ class Franklin_Mini_Codeblock {
                     'function', 'in'
                 ]) . ')\b/', 'c' => 'keyword'],
                 // Shell built-in commands
-                ['r' => '/\b(' . implode('|', array_map('preg_quote', [
+                ['r' => '/\b(' . implode('|', [
                     'echo', 'printf', 'read', 'cd', 'rm', 'exit', 'return', 
                     'source', 'alias', 'unalias', 'export', 'unset', 'shift', 
                     'getopts', 'test', 'sudo', 'chmod', 'chown'
-                ])) . ')\b/', 'c' => 'builtin'],
+                ]) . ')\b/', 'c' => 'builtin'],
                 ['r' => '/([\[\]]{1,2})/', 'c' => 'builtin'],
                 // Common Unix commands
-                ['r' => '/\b(' . implode('|', array_map('preg_quote', [
+                ['r' => '/\b(' . implode('|', [
                     'ls', 'cat', 'grep', 'awk', 'sed', 'find', 'xargs', 
                     'tail', 'head', 'screen', 'dtach', 'curl', 'wget', 'ssh', 
                     'scp', 'tar', 'zip', 'unzip', 'make', 'defaults', 'docker', 
                     'kubectl', 'tmutil', 'pbcopy', 'pbpaste', 'node', 'npm'
-                ])) . ')\b/', 'c' => 'function'],
+                ]) . ')\b/', 'c' => 'function'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*|\${[^}]+})/', 'c' => 'variable'],
                 ['r' => '/\s(--[a-zA-Z0-9\-]+|\-[a-zA-Z]+)/', 'c' => 'flag'],
                 ['r' => '/(\|\||&&|2>>|>>|&>|2>|;|\||>|<)/', 'c' => 'operator'],
