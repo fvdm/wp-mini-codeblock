@@ -249,36 +249,11 @@ class Franklin_Mini_Codeblock {
                     'while', 'until',
                     'select'
                 ]) . ')\b/', 'c' => 'keyword'],
-                // Shell built-in commands
-                ['r' => '/\b(' . implode('|', [
-                    'echo', 'printf', 'read',
-                    'test',
-                    'cd',
-                    'export', 'unset',
-                    'alias', 'unalias',
-                    'source',
-                    'shift', 'getopts',
-                    'exit', 'return',
-                    'sudo', 'chmod', 'chown',
-                    'rm'
-                ]) . ')\b/', 'c' => 'builtin'],
+                // Second command word (blue) - word after command wrapper (sudo, env, time, nice, nohup, watch, xargs)
+                ['r' => '/(^|\n|;|&&|\|\||\|)[ \t]*(?:sudo|env|time|nice|nohup|watch|xargs)\s+\K(?!___FMC)([a-zA-Z_][a-zA-Z0-9_\-]+)(?!\w)/m', 'c' => 'function'],
+                // First command word (orange) - first word after command delimiter
+                ['r' => '/(^|\n|;|&&|\|\||\|)[ \t]*\K(?!___FMC)([a-zA-Z_][a-zA-Z0-9_\-]+)(?!\w)/m', 'c' => 'number'],
                 ['r' => '/([\[\]]{1,2})/', 'c' => 'builtin'],
-                // Common Unix commands
-                ['r' => '/\b(' . implode('|', [
-                    'ls', 'cat',
-                    'grep', 'awk', 'sed',
-                    'find', 'xargs',
-                    'head', 'tail',
-                    'curl', 'wget',
-                    'ssh', 'scp',
-                    'tar', 'zip', 'unzip',
-                    'make',
-                    'screen', 'dtach',
-                    'docker', 'kubectl',
-                    'defaults', 'tmutil',
-                    'pbcopy', 'pbpaste',
-                    'node', 'npm'
-                ]) . ')\b/', 'c' => 'function'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*|\${[^}]+})/', 'c' => 'variable'],
                 ['r' => '/\s(--[a-zA-Z0-9\-]+|\-[a-zA-Z]+)/', 'c' => 'flag'],
                 ['r' => '/(\|\||&&|2>>|>>|&>|2>|;|\||>|<)/', 'c' => 'operator'],

@@ -208,13 +208,47 @@
     <h1>Franklin Mini Codeblock - Shell Syntax Highlighting Test</h1>
     
     <div class="legend">
-        <h3>Expected Highlighting Colors</h3>
-        <p>This test verifies that both opening <code>(</code> and closing <code>)</code> parentheses are highlighted with the same operator color.</p>
+        <h3>Expected Highlighting Colors - Command Coloring Rule</h3>
+        <p>This test verifies the new shell command highlighting rule:</p>
+        <ul>
+            <li><strong>First command word</strong> (e.g., <code>sudo</code>, <code>mkdir</code>, <code>ls</code>) → <strong>Orange</strong></li>
+            <li><strong>Second command word</strong> after command wrappers (e.g., <code>mkdir</code> in <code>sudo mkdir</code>) → <strong>Blue</strong></li>
+        </ul>
         <div>
-            <span class="color-sample"><span class="color-box" style="background: #ff6b9d;"></span> <strong>Operator:</strong> ( ) $( `</span>
+            <span class="color-sample"><span class="color-box" style="background: #ffca80;"></span> <strong>First Command:</strong> sudo, mkdir, ls, grep</span>
+            <span class="color-sample"><span class="color-box" style="background: #82aaff;"></span> <strong>Second Command:</strong> mkdir (after sudo), apt-get (after sudo)</span>
+            <span class="color-sample"><span class="color-box" style="background: #ff6b9d;"></span> <strong>Operator:</strong> ( ) $( ` | ; &&</span>
             <span class="color-sample"><span class="color-box" style="background: #a5d6a7;"></span> <strong>String:</strong> '...' "..."</span>
-            <span class="color-sample"><span class="color-box" style="background: #ff9e64;"></span> <strong>Builtin:</strong> echo, test, [ ]</span>
-            <span class="color-sample"><span class="color-box" style="background: #82aaff;"></span> <strong>Variable:</strong> $var</span>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Command with sudo prefix (first=orange, second=blue)</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">sudo mkdir</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">sudo</span> <span class="fmc-function">mkdir</span></code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Single command (first=orange)</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">mkdir</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">mkdir</span></code></pre>
         </div>
     </div>
 
@@ -229,7 +263,7 @@
                 <span class="fmc-lang">SHELL</span>
                 <button class="fmc-copy" disabled>Copy</button>
             </div>
-            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-function">defaults</span> write com.Ubisoft.AssassinsCreedBrotherhood AppleLanguages <span class="fmc-string">&#039;(&quot;en-US&quot;)&#039;</span></code></pre>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">defaults</span> write com.Ubisoft.AssassinsCreedBrotherhood AppleLanguages <span class="fmc-string">&#039;(&quot;en-US&quot;)&#039;</span></code></pre>
         </div>
     </div>
 
@@ -244,7 +278,7 @@
                 <span class="fmc-lang">SHELL</span>
                 <button class="fmc-copy" disabled>Copy</button>
             </div>
-            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-builtin">echo</span> <span class="fmc-operator">$(</span><span class="fmc-function">ls</span><span class="fmc-operator">)</span></code></pre>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">echo</span> <span class="fmc-operator">$(</span>ls<span class="fmc-operator">)</span></code></pre>
         </div>
     </div>
 
@@ -259,7 +293,7 @@
                 <span class="fmc-lang">SHELL</span>
                 <button class="fmc-copy" disabled>Copy</button>
             </div>
-            <pre class="fmc-pre"><code class="fmc-code">var=<span class="fmc-string">&#039;(not-subshell)&#039;</span></code></pre>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">var</span>=<span class="fmc-string">&#039;(not-subshell)&#039;</span></code></pre>
         </div>
     </div>
 
@@ -274,7 +308,7 @@
                 <span class="fmc-lang">SHELL</span>
                 <button class="fmc-copy" disabled>Copy</button>
             </div>
-            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-builtin">echo</span> <span class="fmc-operator">`</span>date<span class="fmc-operator">`</span></code></pre>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">echo</span> <span class="fmc-operator">`</span>date<span class="fmc-operator">`</span></code></pre>
         </div>
     </div>
 
@@ -289,7 +323,7 @@
                 <span class="fmc-lang">SHELL</span>
                 <button class="fmc-copy" disabled>Copy</button>
             </div>
-            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-keyword">if</span> <span class="fmc-builtin">[</span><span class="fmc-flag"> -f</span> /etc/passwd <span class="fmc-builtin">]</span><span class="fmc-operator">;</span> <span class="fmc-keyword">then</span> <span class="fmc-builtin">echo</span> yes<span class="fmc-operator">;</span> <span class="fmc-keyword">fi</span></code></pre>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-keyword">if</span> <span class="fmc-builtin">[</span><span class="fmc-flag"> -f</span> /etc/passwd <span class="fmc-builtin">]</span><span class="fmc-operator">;</span> <span class="fmc-keyword">then</span> echo yes<span class="fmc-operator">;</span> <span class="fmc-keyword">fi</span></code></pre>
         </div>
     </div>
 
@@ -308,9 +342,99 @@
         </div>
     </div>
 
+    <div class="test-case">
+        <h2>Piped commands (each first command=orange)</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">ls -la | grep test</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">ls</span><span class="fmc-flag"> -la</span> <span class="fmc-operator">|</span> <span class="fmc-number">grep</span> test</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Multiple commands with sudo</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">sudo apt-get install package</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">sudo</span> <span class="fmc-function">apt-get</span> install package</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Multiline with backslashes and operators (all commands highlighted)</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">sudo chown $(logname) ~/Library/Preferences/.GlobalPreferences.plist \
+&amp;&amp; chmod 0600 $_ \
+&amp;&amp; defaults write -g ApplePressAndHoldEnabled -bool true</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">sudo</span> <span class="fmc-function">chown</span> <span class="fmc-operator">$(</span>logname<span class="fmc-operator">)</span> ~/Library/Preferences/.GlobalPreferences.plist \
+<span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">chmod</span> <span class="fmc-number">0600</span> <span class="fmc-variable">$_</span> \
+<span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">defaults</span> write<span class="fmc-flag"> -g</span> ApplePressAndHoldEnabled<span class="fmc-flag"> -bool</span> true</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Multiline with semicolon before backslash (defaults highlighted)</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">launchctl unload ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist \
+&amp;&amp; rm -vf ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist ; \
+defaults write -g ApplePressAndHoldEnabled -bool false</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">launchctl</span> unload ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist \
+<span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">rm</span><span class="fmc-flag"> -vf</span> ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist <span class="fmc-operator">;</span> \
+<span class="fmc-number">defaults</span> write<span class="fmc-flag"> -g</span> ApplePressAndHoldEnabled<span class="fmc-flag"> -bool</span> false</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Multiline separate commands (each line highlighted)</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">sudo rm -f /etc/postfix/postfix-script /etc/postfix/post-install
+sudo postfix upgrade-configuration
+sudo service postfix restart</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">sudo</span> <span class="fmc-function">rm</span><span class="fmc-flag"> -f</span> /etc/postfix/postfix-script /etc/postfix/post-install
+<span class="fmc-number">sudo</span> <span class="fmc-function">postfix</span> upgrade-configuration
+<span class="fmc-number">sudo</span> <span class="fmc-function">service</span> postfix restart</code></pre>
+        </div>
+    </div>
+
     <div style="margin: 3rem 0; padding: 1rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <h3>Visual Inspection Checklist</h3>
+        <h3>Visual Inspection Checklist - Command Coloring</h3>
         <ul>
+            <li>✓ In <code>sudo mkdir</code>: <code>sudo</code> should be orange, <code>mkdir</code> should be blue</li>
+            <li>✓ In <code>mkdir</code>: <code>mkdir</code> should be orange</li>
+            <li>✓ In <code>ls -la | grep test</code>: both <code>ls</code> and <code>grep</code> should be orange</li>
             <li>✓ Both <code>(</code> and <code>)</code> should have the same pink/operator color</li>
             <li>✓ The <code>$(</code> in <code>echo $(ls)</code> should be highlighted as an operator</li>
             <li>✓ Parentheses inside strings should be green (string color)</li>
