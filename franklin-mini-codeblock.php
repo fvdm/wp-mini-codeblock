@@ -91,13 +91,19 @@ class Franklin_Mini_Codeblock {
         // C language keywords
         $c_keywords = [
             // Types
-            'int', 'char', 'float', 'double', 'void', 'long', 'short', 
-            'signed', 'unsigned', 'struct', 'union', 'enum', 'typedef', 'sizeof',
+            'int', 'char', 'float', 'double',
+            'void', 'long', 'short', 'signed', 'unsigned',
+            'struct', 'union', 'enum', 'typedef',
+            'sizeof',
             // Control flow
-            'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'default',
-            'break', 'continue', 'return', 'goto',
+            'if', 'else',
+            'switch', 'case', 'default', 'break',
+            'for', 'while', 'do',
+            'continue', 'return', 'goto',
             // Storage classes
-            'const', 'static', 'extern', 'auto', 'register', 'volatile', 'inline', 'restrict'
+            'const', 'static', 'extern',
+            'auto', 'register',
+            'volatile', 'inline', 'restrict'
         ];
         
         return [
@@ -134,13 +140,20 @@ class Franklin_Mini_Codeblock {
                 ['r' => $this->common_patterns['comment_block'], 'c' => 'comment'],
                 ['r' => $this->common_patterns['strings_all'], 'c' => 'string'],
                 ['r' => '/(?<![\'"])\b([a-zA-Z0-9_]+)\s*:/', 'c' => 'property'],
-                // JavaScript keywords (modularized)
+                // JavaScript keywords
                 ['r' => '/\b(' . implode('|', [
-                    'const', 'let', 'var', 'function', 'return', 'if', 'else', 
-                    'for', 'while', 'class', 'import', 'export', 'from', 'async', 
-                    'await', 'new', 'this', 'super', 'extends', 'static', 'try', 
-                    'catch', 'throw', 'typeof', 'instanceof', 'delete', 'void', 
-                    'yield', 'break', 'continue', 'switch', 'case', 'default', 'do'
+                    'const', 'let', 'var',
+                    'function', 'return',
+                    'class', 'new', 'this', 'super', 'extends', 'static',
+                    'if', 'else',
+                    'switch', 'case', 'default', 'break',
+                    'for', 'while', 'do',
+                    'continue',
+                    'try', 'catch', 'throw',
+                    'import', 'export', 'from',
+                    'async', 'await',
+                    'typeof', 'instanceof', 'delete', 'void',
+                    'yield'
                 ]) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/\b(true|false|null|undefined|NaN|Infinity)\b/', 'c' => 'literal'],
                 ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number'],
@@ -157,15 +170,25 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/("([^"\\\\]|\\\\.)*"|' . "'" . '([^' . "'" . '\\\\]|\\\\.)*' . "'" . '|\[\[[\s\S]*?\]\])/s', 'c' => 'string'],
                 // Lua keywords
                 ['r' => '/\b(' . implode('|', [
-                    'and', 'break', 'do', 'else', 'elseif', 'end', 'false', 
-                    'for', 'function', 'goto', 'if', 'in', 'local', 'nil', 
-                    'not', 'or', 'repeat', 'return', 'then', 'true', 'until', 'while'
+                    'local',
+                    'function', 'return',
+                    'if', 'then', 'else', 'elseif', 'end',
+                    'for', 'do',
+                    'while', 'repeat', 'until',
+                    'break', 'goto',
+                    'and', 'or', 'not',
+                    'true', 'false', 'nil',
+                    'in'
                 ]) . ')\b/', 'c' => 'keyword'],
                 // Lua built-in functions
                 ['r' => '/\b(' . implode('|', [
-                    'print', 'pairs', 'ipairs', 'next', 'type', 'tostring', 
-                    'tonumber', 'error', 'assert', 'pcall', 'xpcall', 
-                    'require', 'dofile', 'load', 'loadfile', 'set'
+                    'print',
+                    'pairs', 'ipairs', 'next',
+                    'type', 'tostring', 'tonumber',
+                    'error', 'assert',
+                    'pcall', 'xpcall',
+                    'require', 'dofile', 'load', 'loadfile',
+                    'set'
                 ]) . ')\b/', 'c' => 'function'],
                 ['r' => '/\b(string|table|math|os|io|coroutine|debug|package)\b/', 'c' => 'type'],
                 ['r' => '/' . $this->common_patterns['number_with_hex'] . '/', 'c' => 'number'],
@@ -178,10 +201,16 @@ class Franklin_Mini_Codeblock {
                 ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
                 // PHP keywords
                 ['r' => '/\b(' . implode('|', [
-                    'class', 'function', 'public', 'private', 'protected', 'static', 
-                    'const', 'return', 'if', 'else', 'foreach', 'while', 'new', 
-                    'namespace', 'use', 'trait', 'interface', 'extends', 'implements', 
-                    'echo', 'print', 'require', 'include'
+                    'namespace', 'use',
+                    'class', 'trait', 'interface', 'extends', 'implements',
+                    'public', 'private', 'protected', 'static', 'const',
+                    'function', 'return',
+                    'new',
+                    'if', 'else', 'elseif',
+                    'switch', 'case', 'default', 'break',
+                    'foreach', 'while',
+                    'echo', 'print',
+                    'require', 'include'
                 ]) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*)/', 'c' => 'variable'],
                 ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number']
@@ -192,10 +221,17 @@ class Franklin_Mini_Codeblock {
                 ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
                 // Python keywords
                 ['r' => '/\b(' . implode('|', [
-                    'def', 'class', 'import', 'from', 'return', 'if', 'elif', 
-                    'else', 'for', 'while', 'in', 'try', 'except', 'finally', 
-                    'with', 'as', 'lambda', 'yield', 'async', 'await', 'pass', 
-                    'break', 'continue', 'global', 'nonlocal'
+                    'import', 'from', 'as',
+                    'def', 'class',
+                    'return', 'yield',
+                    'lambda',
+                    'if', 'elif', 'else',
+                    'for', 'while', 'in',
+                    'break', 'continue', 'pass',
+                    'try', 'except', 'finally',
+                    'with',
+                    'async', 'await',
+                    'global', 'nonlocal'
                 ]) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/\b(True|False|None)\b/', 'c' => 'literal'],
                 ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number']
@@ -206,23 +242,42 @@ class Franklin_Mini_Codeblock {
                 ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
                 // Shell keywords
                 ['r' => '/\b(' . implode('|', [
-                    'if', 'then', 'else', 'elif', 'fi', 'for', 'while', 
-                    'until', 'do', 'done', 'case', 'esac', 'select', 
-                    'function', 'in'
+                    'function', 'in',
+                    'if', 'then', 'else', 'elif', 'fi',
+                    'case', 'esac',
+                    'for', 'do', 'done',
+                    'while', 'until',
+                    'select'
                 ]) . ')\b/', 'c' => 'keyword'],
                 // Shell built-in commands
                 ['r' => '/\b(' . implode('|', [
-                    'echo', 'printf', 'read', 'cd', 'rm', 'exit', 'return', 
-                    'source', 'alias', 'unalias', 'export', 'unset', 'shift', 
-                    'getopts', 'test', 'sudo', 'chmod', 'chown'
+                    'echo', 'printf', 'read',
+                    'test',
+                    'cd',
+                    'export', 'unset',
+                    'alias', 'unalias',
+                    'source',
+                    'shift', 'getopts',
+                    'exit', 'return',
+                    'sudo', 'chmod', 'chown',
+                    'rm'
                 ]) . ')\b/', 'c' => 'builtin'],
                 ['r' => '/([\[\]]{1,2})/', 'c' => 'builtin'],
                 // Common Unix commands
                 ['r' => '/\b(' . implode('|', [
-                    'ls', 'cat', 'grep', 'awk', 'sed', 'find', 'xargs', 
-                    'tail', 'head', 'screen', 'dtach', 'curl', 'wget', 'ssh', 
-                    'scp', 'tar', 'zip', 'unzip', 'make', 'defaults', 'docker', 
-                    'kubectl', 'tmutil', 'pbcopy', 'pbpaste', 'node', 'npm'
+                    'ls', 'cat',
+                    'grep', 'awk', 'sed',
+                    'find', 'xargs',
+                    'head', 'tail',
+                    'curl', 'wget',
+                    'ssh', 'scp',
+                    'tar', 'zip', 'unzip',
+                    'make',
+                    'screen', 'dtach',
+                    'docker', 'kubectl',
+                    'defaults', 'tmutil',
+                    'pbcopy', 'pbpaste',
+                    'node', 'npm'
                 ]) . ')\b/', 'c' => 'function'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*|\${[^}]+})/', 'c' => 'variable'],
                 ['r' => '/\s(--[a-zA-Z0-9\-]+|\-[a-zA-Z]+)/', 'c' => 'flag'],
@@ -235,13 +290,24 @@ class Franklin_Mini_Codeblock {
                 ['r' => $this->common_patterns['comment_line_slashes'], 'c' => 'comment'],
                 ['r' => $this->common_patterns['comment_block'], 'c' => 'comment'],
                 ['r' => $this->common_patterns['strings_all'], 'c' => 'string'],
-                // TypeScript keywords (extends JavaScript)
+                // TypeScript keywords
                 ['r' => '/\b(' . implode('|', [
-                    'const', 'let', 'var', 'function', 'return', 'if', 'else', 
-                    'for', 'while', 'class', 'import', 'export', 'from', 'async', 
-                    'await', 'new', 'this', 'super', 'extends', 'static', 
-                    'interface', 'type', 'enum', 'namespace', 'public', 'private', 
-                    'protected', 'readonly', 'implements', 'declare'
+                    'const', 'let', 'var',
+                    'function', 'return',
+                    'class', 'new', 'this', 'super', 'extends', 'static',
+                    'interface', 'type', 'enum', 'implements',
+                    'namespace',
+                    'public', 'private', 'protected', 'readonly',
+                    'declare',
+                    'if', 'else',
+                    'switch', 'case', 'default', 'break',
+                    'for', 'while', 'do',
+                    'continue',
+                    'try', 'catch', 'throw',
+                    'import', 'export', 'from',
+                    'async', 'await',
+                    'typeof', 'instanceof', 'delete', 'void',
+                    'yield'
                 ]) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/\b(string|number|boolean|any|void|never|unknown)\b/', 'c' => 'type'],
                 ['r' => '/\b(true|false|null|undefined|NaN|Infinity)\b/', 'c' => 'literal'],
