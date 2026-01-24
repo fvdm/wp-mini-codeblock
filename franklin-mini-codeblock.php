@@ -250,9 +250,9 @@ class Franklin_Mini_Codeblock {
                     'select'
                 ]) . ')\b/', 'c' => 'keyword'],
                 // Second command word (blue) - word after command wrapper (sudo, env, time, nice, nohup, watch, xargs)
-                ['r' => '/(^|;|&&|\|\||\|)[ \t]*(?:sudo|env|time|nice|nohup|watch|xargs)\s+\K(?!___FMC)([a-zA-Z_][a-zA-Z0-9_\-]+)(?!\w)/', 'c' => 'function'],
+                ['r' => '/(^|\n|;|&&|\|\||\|)[ \t]*(?:sudo|env|time|nice|nohup|watch|xargs)\s+\K(?!___FMC)([a-zA-Z_][a-zA-Z0-9_\-]+)(?!\w)/m', 'c' => 'function'],
                 // First command word (orange) - first word after command delimiter
-                ['r' => '/(^|;|&&|\|\||\|)[ \t]*\K(?!___FMC)([a-zA-Z_][a-zA-Z0-9_\-]+)(?!\w)/', 'c' => 'number'],
+                ['r' => '/(^|\n|;|&&|\|\||\|)[ \t]*\K(?!___FMC)([a-zA-Z_][a-zA-Z0-9_\-]+)(?!\w)/m', 'c' => 'number'],
                 ['r' => '/([\[\]]{1,2})/', 'c' => 'builtin'],
                 ['r' => '/(\$[a-zA-Z_][a-zA-Z0-9_]*|\${[^}]+})/', 'c' => 'variable'],
                 ['r' => '/\s(--[a-zA-Z0-9\-]+|\-[a-zA-Z]+)/', 'c' => 'flag'],

@@ -107,6 +107,27 @@ $samples = [
         'description' => 'Multiple commands with sudo',
         'code' => 'sudo apt-get install package',
         'language' => 'shell'
+    ],
+    [
+        'description' => 'Multiline with backslashes and operators (all commands highlighted)',
+        'code' => 'sudo chown $(logname) ~/Library/Preferences/.GlobalPreferences.plist \
+&& chmod 0600 $_ \
+&& defaults write -g ApplePressAndHoldEnabled -bool true',
+        'language' => 'shell'
+    ],
+    [
+        'description' => 'Multiline with semicolon before backslash (defaults highlighted)',
+        'code' => 'launchctl unload ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist \
+&& rm -vf ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist ; \
+defaults write -g ApplePressAndHoldEnabled -bool false',
+        'language' => 'shell'
+    ],
+    [
+        'description' => 'Multiline separate commands (each line highlighted)',
+        'code' => 'sudo rm -f /etc/postfix/postfix-script /etc/postfix/post-install
+sudo postfix upgrade-configuration
+sudo service postfix restart',
+        'language' => 'shell'
     ]
 ];
 

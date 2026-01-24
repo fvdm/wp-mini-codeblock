@@ -372,6 +372,63 @@
         </div>
     </div>
 
+    <div class="test-case">
+        <h2>Multiline with backslashes and operators (all commands highlighted)</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">sudo chown $(logname) ~/Library/Preferences/.GlobalPreferences.plist \
+&amp;&amp; chmod 0600 $_ \
+&amp;&amp; defaults write -g ApplePressAndHoldEnabled -bool true</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">sudo</span> <span class="fmc-function">chown</span> <span class="fmc-operator">$(</span>logname<span class="fmc-operator">)</span> ~/Library/Preferences/.GlobalPreferences.plist \
+<span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">chmod</span> <span class="fmc-number">0600</span> <span class="fmc-variable">$_</span> \
+<span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">defaults</span> write<span class="fmc-flag"> -g</span> ApplePressAndHoldEnabled<span class="fmc-flag"> -bool</span> true</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Multiline with semicolon before backslash (defaults highlighted)</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">launchctl unload ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist \
+&amp;&amp; rm -vf ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist ; \
+defaults write -g ApplePressAndHoldEnabled -bool false</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">launchctl</span> unload ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist \
+<span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">rm</span><span class="fmc-flag"> -vf</span> ~/Library/LaunchAgents/com.fvdm.AccentMenu.plist <span class="fmc-operator">;</span> \
+<span class="fmc-number">defaults</span> write<span class="fmc-flag"> -g</span> ApplePressAndHoldEnabled<span class="fmc-flag"> -bool</span> false</code></pre>
+        </div>
+    </div>
+
+    <div class="test-case">
+        <h2>Multiline separate commands (each line highlighted)</h2>
+        <div class="test-description">Raw code:</div>
+        <div class="raw-code">sudo rm -f /etc/postfix/postfix-script /etc/postfix/post-install
+sudo postfix upgrade-configuration
+sudo service postfix restart</div>
+        
+        <div class="test-description">Highlighted output:</div>
+        <div class="fmc-wrapper">
+            <div class="fmc-header">
+                <span class="fmc-lang">SHELL</span>
+                <button class="fmc-copy" disabled>Copy</button>
+            </div>
+            <pre class="fmc-pre"><code class="fmc-code"><span class="fmc-number">sudo</span> <span class="fmc-function">rm</span><span class="fmc-flag"> -f</span> /etc/postfix/postfix-script /etc/postfix/post-install
+<span class="fmc-number">sudo</span> <span class="fmc-function">postfix</span> upgrade-configuration
+<span class="fmc-number">sudo</span> <span class="fmc-function">service</span> postfix restart</code></pre>
+        </div>
+    </div>
+
     <div style="margin: 3rem 0; padding: 1rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
         <h3>Visual Inspection Checklist - Command Coloring</h3>
         <ul>
