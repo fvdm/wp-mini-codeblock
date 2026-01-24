@@ -240,7 +240,7 @@ class Franklin_Mini_Codeblock {
                 // Highlight slashes in orange/peach
                 ['r' => '/\//', 'c' => 'path-slash'],
                 // Make the last segment (filename) bold - matches non-slash characters at the end of a line
-                ['r' => '/([^\/\n\s]+(?:[^\/\n]*[^\/\n\s])?)$/m', 'c' => 'path-filename']
+                ['r' => '/([^\/\n]+)$/m', 'c' => 'path-filename']
             ],
             'shell' => [
                 ['r' => '/^(#!.*)$/m', 'c' => 'preprocessor'],
