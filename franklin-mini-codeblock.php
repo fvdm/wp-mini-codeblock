@@ -243,9 +243,11 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/([^\/\n]+)$/m', 'c' => 'path-filename']
             ],
             'shell' => [
+                // Process shebang first (specific pattern)
                 ['r' => '/^(#!.*)$/m', 'c' => 'preprocessor'],
-                ['r' => $this->common_patterns['comment_line_hash'], 'c' => 'comment'],
+                // Process strings before comments to avoid matching # inside quotes
                 ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
+                ['r' => $this->common_patterns['comment_line_hash'], 'c' => 'comment'],
                 // Shell keywords
                 ['r' => '/\b(' . implode('|', [
                     'function', 'in',

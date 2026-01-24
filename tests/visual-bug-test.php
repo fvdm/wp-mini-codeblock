@@ -49,9 +49,11 @@ class Test_Highlighter {
     private function init_language_patterns() {
         return [
             'shell' => [
+                // Process shebang first (specific pattern)
                 ['r' => '/^(#!.*)$/m', 'c' => 'preprocessor'],
-                ['r' => $this->common_patterns['comment_line_hash'], 'c' => 'comment'],
+                // Process strings before comments to avoid matching # inside quotes
                 ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
+                ['r' => $this->common_patterns['comment_line_hash'], 'c' => 'comment'],
                 ['r' => '/\b(' . implode('|', ['if', 'then', 'else', 'elif', 'fi', 'for', 'do', 'done', 'while']) . ')\b/', 'c' => 'keyword'],
                 ['r' => '/(^|\n|;|&&|\|\||\|)[ \t]*(?:sudo|env|time|nice|nohup|watch|xargs)\s+\K(?!___FMC)([a-zA-Z_][a-zA-Z0-9_\-]+)(?!\w)/m', 'c' => 'function'],
                 ['r' => '/(^|\n|;|&&|\|\||\|)[ \t]*\K(?!___FMC)([a-zA-Z_][a-zA-Z0-9_\-]+)(?!\w)/m', 'c' => 'number'],

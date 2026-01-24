@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Shell String Bug Visual Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #f0f0f0; }
+        .test-case { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .fmc-string { color: #a5d6a7; }
+        .fmc-comment { color: #6a7b8a; font-style: italic; }
+        .fmc-number { color: #ffca80; }
+        .fmc-operator { color: #ff6b9d; }
+        .fmc-flag { color: #7fdbca; }
+        .fmc-function { color: #82aaff; }
+        .fmc-variable { color: #82aaff; }
+        .fmc-keyword { color: #ff6b9d; }
+        .fmc-builtin { color: #ffca80; }
+        .fmc-preprocessor { color: #c792ea; }
+        pre { background: #1a1a1a; color: #e8e8e8; padding: 15px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+<div class="test-case"><h2>Bug Report: Shell String Pattern Issue</h2><h3>Input Code:</h3><pre>cd /usr/local/etc/powerdns \
+&amp;&amp; cp -n recursor.yml-dist recursor.yml \
+&amp;&amp; sed -i &#039;&#039; -E &#039;s/^#[[:blank:]]*dnssec:$/dnssec:/&#039; recursor.yml \
+&amp;&amp; sed -i &#039;&#039; -E &#039;s/^# *validation: process$/  validation: validate/&#039; recursor.yml</pre><h3>Highlighted Output:</h3><pre><span class="fmc-number">cd</span> /usr/local/etc/powerdns \
+<span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">cp</span><span class="fmc-flag"> -n</span> recursor.yml-dist recursor.yml \
+<span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">sed</span><span class="fmc-flag"> -i</span> <span class="fmc-string">&#039;&#039;</span><span class="fmc-flag"> -E</span> <span class="fmc-string">&#039;s/^#[[:blank:]]*dnssec:$/dnssec:/&#039;</span> recursor.yml \
+<span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">sed</span><span class="fmc-flag"> -i</span> <span class="fmc-string">&#039;&#039;</span><span class="fmc-flag"> -E</span> <span class="fmc-string">&#039;s/^# *validation: process$/  validation: validate/&#039;</span> recursor.yml</pre></div><div class="test-case"><h3>Test: sed -i &#039;&#039; file.txt</h3><pre><span class="fmc-number">sed</span><span class="fmc-flag"> -i</span> <span class="fmc-string">&#039;&#039;</span> file.txt</pre></div><div class="test-case"><h3>Test: sed -i &#039;&#039; -E &#039;s/test//&#039; file.txt</h3><pre><span class="fmc-number">sed</span><span class="fmc-flag"> -i</span> <span class="fmc-string">&#039;&#039;</span><span class="fmc-flag"> -E</span> <span class="fmc-string">&#039;s/test//&#039;</span> file.txt</pre></div><div class="test-case"><h3>Test: echo &#039;&#039; &amp;&amp; echo &#039;hello&#039;</h3><pre><span class="fmc-number">echo</span> <span class="fmc-string">&#039;&#039;</span> <span class="fmc-operator">&amp;&amp;</span> <span class="fmc-number">echo</span> <span class="fmc-string">&#039;hello&#039;</span></pre></div>
+</body>
+</html>
