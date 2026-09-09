@@ -333,6 +333,45 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(<\/?[a-zA-Z][a-zA-Z0-9:]*)/', 'c' => 'tag'],
                 ['r' => '/([a-zA-Z:][a-zA-Z0-9:_-]*)=/', 'c' => 'attr'],
                 ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string']
+            ],
+            'yaml' => [
+                ['r' => $this->common_patterns['comment_line_hash'], 'c' => 'comment'],
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
+                // YAML keys (before colon)
+                ['r' => '/^([a-zA-Z_][a-zA-Z0-9_.]*)(?=\s*:)/m', 'c' => 'property'],
+                // YAML boolean and null values
+                ['r' => '/\b(true|false|yes|no|on|off|null|~|&\w+|\*\w+)\b/', 'c' => 'literal'],
+                // YAML multi-line indicators
+                ['r' => '/(\|>|\|\d+|>\d+)/', 'c' => 'operator'],
+                // YAML anchors and aliases
+                ['r' => '/(&[a-zA-Z_][a-zA-Z0-9_]*)/', 'c' => 'variable'],
+                ['r' => '/(\*[a-zA-Z_][a-zA-Z0-9_]*)/', 'c' => 'function'],
+                ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number']
+            ],
+            'jinja2' => [
+                ['r' => '/(\{#.*?#\})/s', 'c' => 'comment'],
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
+                // Jinja2 variables {{ ... }}
+                ['r' => '/(\{\{.*?\}\})/s', 'c' => 'variable'],
+                // Jinja2 statements {% ... %}
+                ['r' => '/(\{%.*?%\})/s', 'c' => 'keyword'],
+                // Jinja2 keywords
+                ['r' => '/\b(' . implode('|', [
+                    'if', 'else', 'elif', 'endif',
+                    'for', 'in', 'endfor',
+                    'while', 'endwhile',
+                    'block', 'endblock',
+                    'extends', 'include', 'import',
+                    'macro', 'endmacro',
+                    'call', 'filter', 'endfilter',
+                    'autoescape', 'endautoescape',
+                    'set', 'do',
+                    'with', 'without',
+                    'true', 'false', 'none', 'and', 'or', 'not'
+                ]) . ')\b/', 'c' => 'keyword'],
+                // Jinja2 filters (| filter)
+                ['r' => '/(\|[a-zA-Z_][a-zA-Z0-9_]*)/', 'c' => 'function'],
+                ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number']
             ]
         ];
     }
