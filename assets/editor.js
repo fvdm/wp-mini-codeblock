@@ -12,6 +12,7 @@
         { label: 'HTML', value: 'html' },
         { label: 'INI', value: 'ini' },
         { label: 'JavaScript', value: 'javascript' },
+        { label: 'Jinja2', value: 'jinja2' },
         { label: 'JSON', value: 'json' },
         { label: 'Lua', value: 'lua' },
         { label: 'Path', value: 'path' },
@@ -21,7 +22,8 @@
         { label: 'Text', value: 'text' },
         { label: 'TypeScript', value: 'typescript' },
         { label: 'URL', value: 'url' },
-        { label: 'XML', value: 'xml' }
+        { label: 'XML', value: 'xml' },
+        { label: 'YAML', value: 'yaml' }
     ];
 
     // Calculate optimal number of rows for textarea
