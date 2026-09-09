@@ -333,6 +333,40 @@ class Franklin_Mini_Codeblock {
                 ['r' => '/(<\/?[a-zA-Z][a-zA-Z0-9:]*)/', 'c' => 'tag'],
                 ['r' => '/([a-zA-Z:][a-zA-Z0-9:_-]*)=/', 'c' => 'attr'],
                 ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string']
+            ],
+            'yaml' => [
+                ['r' => $this->common_patterns['comment_line_hash'], 'c' => 'comment'],
+                ['r' => $this->common_patterns['strings_all'], 'c' => 'string'],
+                ['r' => '/^(\s*[a-zA-Z_][a-zA-Z0-9_]*\s*:)/m', 'c' => 'property'],
+                ['r' => '/\b(true|false|null|yes|no|on|off)\b/i', 'c' => 'literal'],
+                ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number'],
+                ['r' => '/&([a-zA-Z_][a-zA-Z0-9_]*)\b/', 'c' => 'variable'],
+                ['r' => '/\*([a-zA-Z_][a-zA-Z0-9_]*)\b/', 'c' => 'function'],
+                ['r' => '/!!([a-zA-Z0-9_]+)/', 'c' => 'builtin'],
+                ['r' => '/^(\s*\-(\s|$))/', 'c' => 'operator']
+            ],
+            'jinja2' => [
+                ['r' => '/({#[\s\S]*?#})/', 'c' => 'comment'],
+                ['r' => $this->common_patterns['strings_single_double'], 'c' => 'string'],
+                ['r' => '/({{.*?}})/s', 'c' => 'variable'],
+                ['r' => '/({%.*?%})/s', 'c' => 'keyword'],
+                ['r' => '/\|\s*([a-zA-Z_][a-zA-Z0-9_]*)/', 'c' => 'function'],
+                ['r' => '/\bis\s+([a-zA-Z_][a-zA-Z0-9_]*)/', 'c' => 'type'],
+                ['r' => '/\b(' . implode('|', [
+                    'if', 'else', 'elif', 'endif',
+                    'for', 'in', 'endfor',
+                    'while', 'endwhile',
+                    'set', 'endset',
+                    'block', 'endblock',
+                    'extends',
+                    'include',
+                    'macro', 'endmacro',
+                    'call',
+                    'with',
+                    'autoescape', 'endautoescape'
+                ]) . ')\b/', 'c' => 'keyword'],
+                ['r' => '/' . $this->common_patterns['number_basic'] . '/', 'c' => 'number'],
+                ['r' => '/\b(true|false|null|none)\b/i', 'c' => 'literal']
             ]
         ];
     }
@@ -377,7 +411,9 @@ class Franklin_Mini_Codeblock {
         
         // Add aliases
         $patterns['bash'] = $patterns['shell'];
+        $patterns['jinja2'] = $patterns['jinja2'];
         $patterns['plain'] = $patterns['text'];
+        $patterns['yaml'] = $patterns['yaml'];
 
         if ( ! isset( $patterns[ $language ] ) ) {
             $language = 'text';
